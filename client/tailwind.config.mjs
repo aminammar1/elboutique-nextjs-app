@@ -1,17 +1,142 @@
 /** @type {import('tailwindcss').Config} */
+import colors from 'tailwindcss/colors'
+import tailwindcssAnimate from 'tailwindcss-animate'
+
 export default {
+  darkMode: 'class',
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '0',
+        '2xl': '2rem',
+        '3xl': '2rem',
+        '4xl': '2rem',
+      },
+      screens: {
+        xs: '360px',
+        sm: '575px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1440px',
+        '3xl': '1680px',
+        '4xl': '1920px',
+      },
+    },
+    colors: {
+      primary: {
+        50: '#fcf3f6',
+        100: '#fbe8f0',
+        200: '#f8d2e1',
+        300: '#f4adc8',
+        400: '#ef94b4',
+        500: '#e15381',
+        600: '#cf335d',
+        700: '#b32346',
+        800: '#94203b',
+        900: '#7c1f34',
+      },
+      secondary: {
+        50: '#f0f8ff',
+        100: '#e0f0fe',
+        200: '#bae2fd',
+        300: '#7ccbfd',
+        400: '#37b1f9',
+        500: '#0d97ea',
+        600: '#016fb9',
+        700: '#025fa2',
+        800: '#065186',
+        900: '#0c446e',
+      },
+      white: '#FFFFFF',
+      black: '#1f1f1f',
+      slate: colors.slate,
+      gray: colors.gray,
+      neutral: colors.neutral,
+      red: colors.red,
+      green: colors.green,
+      transparent: 'transparent',
+      heading: colors.black,
+      paragraphe: colors.gray[600],
+      label: colors.black,
+      placeholder: colors.gray[400],
+      body: colors.slate[700],
+      table: colors.gray[900],
+      background: colors.gray[100],
+      border: colors.gray[200],
+      'inputs-border': colors.gray[300],
+      icon: colors.gray[500],
+    },
+    fontWeight: {
+      thin: '100',
+      extralight: '200',
+      light: '300',
+      normal: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+      extrabold: '800',
+      black: '900',
+    },
+    fontSize: {
+      sm: '0.8rem',
+      base: '1rem',
+      xl: '1.25rem',
+      '2xl': '1.563rem',
+      '3xl': '1.953rem',
+      '4xl': '2.441rem',
+      '5xl': '3.052rem',
+      h1: [
+        '4rem',
+        { lineHeight: '5rem', letterSpacing: '0.0375em', fontWeight: '700' },
+      ],
+      h2: [
+        '3rem',
+        { lineHeight: '2rem', letterSpacing: '0.035em', fontWeight: '700' },
+      ],
+      h3: [
+        '2.5rem',
+        { lineHeight: '3.5rem', letterSpacing: '0.05em', fontWeight: '700' },
+      ],
+      h4: ['2rem', { lineHeight: '2.75rem', fontWeight: '700' }],
+      h5: ['1.5rem', { lineHeight: '2.5rem', fontWeight: '600' }],
+      h6: ['1.25rem', { lineHeight: '2rem', fontWeight: '500' }],
+      p: ['0.875rem', { lineHeight: '1.5rem', fontWeight: '400' }],
+      body: ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],
+      span: ['0.75rem', { lineHeight: '1.5rem', fontWeight: '400' }],
+    },
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      boxShadow: {
+        button:
+          'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px',
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+        'heart-beating': {
+          '0%, 10%': { transform: 'scale(1)' },
+          '10%, 100%': { transform: 'scale(1.01)' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        'heart-beating': 'heart-beating 2s infinite ease-out',
       },
     },
   },
-  plugins: [],
-};
+  plugins: [tailwindcssAnimate],
+}
