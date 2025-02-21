@@ -38,6 +38,9 @@ export default function ResetPassword() {
               {...register('password')}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
+            <button type="button" className="absolute inset-y-0 right-3 flex items-center text-gray-500" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+            </button>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
@@ -49,6 +52,9 @@ export default function ResetPassword() {
               {...register('confirmPassword')}
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
+            <button type="button" className="absolute inset-y-0 right-3 flex items-center text-gray-500" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                          {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+                        </button>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
             )}
