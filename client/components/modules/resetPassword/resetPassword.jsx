@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { resetPasswordSchema } from '@/lib/resetPasswordSchema'
+import { FaRegEyeSlash, FaRegEye } from 'react-icons/fa6'
 
 export default function ResetPassword() {
   const {
@@ -15,6 +16,7 @@ export default function ResetPassword() {
   })
 
   const [successMessage, setSuccessMessage] = useState('')
+  const [showConfirmPassword , setShowConfirmPassword] = useState(false)
 
   const onSubmit = (data) => {
     console.log(data)
@@ -53,8 +55,8 @@ export default function ResetPassword() {
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
             <button type="button" className="absolute inset-y-0 right-3 flex items-center text-gray-500" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                          {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
-                        </button>
+                       {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+            </button>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
             )}
