@@ -108,7 +108,7 @@ export default function PaymentCard() {
                   free shipping
                 </h6>
                 <span className="text-sm text-black font-normal">
-                  order over $300
+                  order over $150
                 </span>
               </div>
             </div>
