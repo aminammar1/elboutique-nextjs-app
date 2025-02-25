@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Put, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Put, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signupdto';
 import { LoginDto } from './dto/logindto';
 import { RefreshTokenDto } from './dto/refresh-tokensdto';
-import { ForgetPasswordDto } from './dto/forget-passworddto';
-import { ChangePasswordDto } from './dto/change-passworddto';
+import {
+  ForgetPasswordDto,
+  ResetPasswordDto,
+  VerifyOtpDto,
+} from './dto/auth.dto';
 import { AuthGuard } from 'src/guards/auth.guards';
-import { ResetPasswordDto } from './dto/reset-passworddto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,38 +20,37 @@ export class AuthController {
   }
 
   @Post('login')
-  async login (@Body() Credentials:LoginDto){
-  return this.authService.login(Credentials);}
-
- @Post('refresh')
- async refreshToken (@Body() refreshTokenDto:RefreshTokenDto){
-  return this.authService.refreshTokens(refreshTokenDto.refreshToken)
-}
- 
-@UseGuards(AuthGuard)
-@Put('change-password')
-async changePassword(
-  @Body() changePasswordDto: ChangePasswordDto,
-  @Req() req,
-) {
-  return this.authService.changePassword(
-    req.userId,
-    changePasswordDto.oldPassword,
-    changePasswordDto.newPassword,
-  );
-}
-  @Post('forgot-password')
-  async forgetPassword (@Body() forgetPasswordDto:ForgetPasswordDto){
-    return this.authService.forgetPassword(forgetPasswordDto.email)
+  async login(@Body() Credentials: LoginDto) {
+    return this.authService.login(Credentials);
   }
 
-  @Put('reset-password')
+  @Post('refresh')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
+  }
+
+  /** Request Password Reset (Send OTP) */
+  @Post('forgot-password')
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    return this.authService.requestPasswordReset(forgetPasswordDto.email);
+  }
+
+  /** Verify OTP */
+  @Post('verify-otp')
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
+    return this.authService.verifyOTP(verifyOtpDto.email, verifyOtpDto.otp);
+  }
+
+  /** Reset Password (After OTP Verification) */
+  @Put('reset-password/:userId')
   async resetPassword(
+    @Param('userId') userId: string,
     @Body() resetPasswordDto: ResetPasswordDto,
   ) {
     return this.authService.resetPassword(
+      userId,
       resetPasswordDto.newPassword,
-      resetPasswordDto.resetToken,
+      resetPasswordDto.confirmPassword,
     );
   }
 }

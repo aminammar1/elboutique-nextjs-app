@@ -4,35 +4,33 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import {JwtModule} from '@nestjs/jwt'
+import { JwtModule } from '@nestjs/jwt';
 import config from './config/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal:true, 
-      cache:true,
-       load:[config]
-    }), 
+      isGlobal: true,
+      cache: true,
+      load: [config],
+    }),
     JwtModule.registerAsync({
-      imports:[ConfigModule],
+      imports: [ConfigModule],
       useFactory: async (config) => ({
         secret: config.get('jwt.secret'),
       }),
       global: true,
-      inject: [ConfigService]
-      }),
+      inject: [ConfigService],
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory:async (config) => ({
-        uri: config.get('database.connectionString')
+      useFactory: async (config) => ({
+        uri: config.get('database.connectionString'),
       }),
-      inject:[ConfigService],
-        }),
-      AuthModule,
+      inject: [ConfigService],
+    }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
-

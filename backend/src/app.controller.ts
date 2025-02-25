@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 @Controller()
 export class AppController {
@@ -6,7 +6,6 @@ export class AppController {
 
   @Get()
   someProtedRoute(@Req() req) {
-     return { message:'Accessed Ressource', userId: req.userId}
-   
+    return { message: 'Accessed Ressource', userId: req.userId };
   }
 }
