@@ -32,9 +32,9 @@ export class AuthService {
 
   /** SignUp */
   async signup(signupData: SignUpDto) {
-    const { name, email, password, confirme_Password } = signupData;
+    const { name, email, password, confirmPassword , terms } = signupData;
 
-    if (password !== confirme_Password) {
+    if (password !== confirmPassword) {
       throw new HttpException(
         { message: 'Passwords do not match', success: false, error: true },
         HttpStatus.BAD_REQUEST,
@@ -63,6 +63,7 @@ export class AuthService {
       data: { user: newUser },
     };
   }
+  
   /**Login  */
   async login(Credentials: LoginDto) {
     const { email, password } = Credentials;
@@ -153,7 +154,7 @@ export class AuthService {
     // Send OTP via email
     await this.mailService.sendOTPEmail(email, otp);
 
-    return { message: 'If this email exists, an OTP has been sent.' };
+    return { message: 'If this email exists, an OTP has been sent.'  , success: true, error: false };
   }
 
   /** Verify OTP */
