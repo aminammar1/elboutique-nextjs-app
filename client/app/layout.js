@@ -2,6 +2,7 @@ import * as React from 'react'
 import './globals.css'
 import { font } from './fonts'
 import { cn } from '@/lib/utils'
+import Providers from '@/providers'
 
 export const metadata = {
   title: 'EL Butique App',
@@ -12,8 +13,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={cn('', font.className)}>
-        {children}
-        </body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

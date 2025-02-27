@@ -6,10 +6,10 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import './style.css'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import { cn } from '@/lib/utils'
-import { Button } from '@mui/material'
+import { Button } from '@/components/custom/Button'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
 import { slidesData } from '@/constants/sliderData'
@@ -50,7 +50,7 @@ export default function HomeSlider() {
               >
                 {item.title !== '' ? (
                   <div className="absolute drop-shadow-2xl grid grid-cols-1 place-content-start justify-items-center lg:justify-items-start gap-8 capitalize m-auto top-100 lg:top-30 lg:left-20 w-fit">
-                    <motion.h4
+                    <m.h4
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 0.4 }}
@@ -58,8 +58,8 @@ export default function HomeSlider() {
                       style={{ color: item.textColor }}
                     >
                       {item.subtitle.substring(0, 65)}
-                    </motion.h4>
-                    <motion.h1
+                    </m.h4>
+                    <m.h1
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 0.6 }}
@@ -67,8 +67,8 @@ export default function HomeSlider() {
                       style={{ color: item.textColor }}
                     >
                       {item.title}
-                    </motion.h1>
-                    <motion.h6
+                    </m.h1>
+                    <m.h6
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 1 }}
@@ -76,8 +76,8 @@ export default function HomeSlider() {
                       style={{ color: item.textColor }}
                     >
                       {item.description}
-                    </motion.h6>
-                    <motion.a
+                    </m.h6>
+                    <m.a
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 1.2, ease: 'linear', duration: 0.8 }}
@@ -85,7 +85,7 @@ export default function HomeSlider() {
                       href={`/${item.link}`}
                     >
                       {item.btn}
-                    </motion.a>
+                    </m.a>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">

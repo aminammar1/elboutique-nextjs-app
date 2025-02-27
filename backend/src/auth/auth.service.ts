@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpDto } from './dto/signupdto';
@@ -14,18 +13,17 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/logindto';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshToken } from './schemas/refresh-token.schema';
-import { v4 as uuidv4 } from 'uuid';
+import { Response as ExpressResponse } from 'express';
 import { ResetToken } from './schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private UserModel: Model<User>,
-    @InjectModel(RefreshToken.name)
-    private RefreshTokenModel: Model<RefreshToken>,
-    @InjectModel(ResetToken.name) private ResetTokenModel: Model<ResetToken>,
+    @InjectModel(User.name) 
+    private UserModel: Model<User>,
+    @InjectModel(ResetToken.name)
+    private ResetTokenModel: Model<ResetToken>,
     private jwtService: JwtService,
     private mailService: MailService,
   ) {}
@@ -65,68 +63,71 @@ export class AuthService {
   }
   
   /**Login  */
-  async login(Credentials: LoginDto) {
+  async login(Credentials: LoginDto, res: ExpressResponse) {
     const { email, password } = Credentials;
     const user = await this.UserModel.findOne({ email });
 
     if (!user) {
-      throw new UnauthorizedException({
-        message: 'Wrong credentials',
-        success: false,
-        error: true,
-      });
+      throw new UnauthorizedException('Wrong credentials');
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      throw new UnauthorizedException({
-        message: 'Wrong credentials',
-        success: false,
-        error: true,
-      });
+      throw new UnauthorizedException('Wrong credentials');
     }
-    const updateUser = await this.UserModel.findByIdAndUpdate(user._id, {
-      last_login_date: new Date(),
+
+    await this.UserModel.findByIdAndUpdate(user._id, { last_login_date: new Date() });
+
+    const tokens = this.generateTokens(user._id.toString());
+
+    // Set tokens in secure HTTP-only cookies
+    res.cookie('access_token', tokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000, // 1 hour
     });
-    const tokens = await this.generateUserTokens(user._id);
+
+    res.cookie('refresh_token', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+    });
+
     return {
       message: 'Logged in successfully',
       success: true,
-      error: false,
-      ...tokens,
       userId: user._id,
     };
   }
 
-  /**Refresh Token */
-  async refreshTokens(refreshToken: string) {
-    const token = await this.RefreshTokenModel.findOneAndDelete({
-      token: refreshToken,
-      expiryDate: { $gte: new Date() },
-    });
-    if (!token) {
-      throw new UnauthorizedException('refresh token is invalid');
+  async refreshTokens(refreshToken: string, res: ExpressResponse) {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+  
+      const tokens = this.generateTokens(payload.userId);
+  
+      res.cookie('access_token', tokens.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 1000, // 1 hour
+      });
+  
+      return res.status(200).json({ message: 'Tokens refreshed successfully', success: true , tokens });
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid refresh token', success: false });
     }
-    return this.generateUserTokens(token.userId);
   }
 
-  /**Generate User Tokens */
-  async generateUserTokens(userId) {
+  private generateTokens(userId: string) {
     const accessToken = this.jwtService.sign({ userId }, { expiresIn: '1h' });
-    const refreshToken = uuidv4();
-    await this.storeRefreshToken(refreshToken, userId);
-    return {
-      accessToken,
-      refreshToken,
-    };
+    const refreshToken = this.jwtService.sign({ userId }, { expiresIn: '3d' });
+
+    return { accessToken, refreshToken };
   }
 
-  /**Store Refresh Token */
-  async storeRefreshToken(token: string, userId) {
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + 3);
-    await this.RefreshTokenModel.create({ token, userId, expiryDate });
-  }
 
   /**Forget Password */
   async requestPasswordReset(email: string) {

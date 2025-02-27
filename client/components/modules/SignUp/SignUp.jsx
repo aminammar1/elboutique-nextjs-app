@@ -30,21 +30,15 @@ export default function Signup() {
   )
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    setLoading(true)
 
-    const result = await signup(data);
+    const result = await signup(data)
 
     if (result.success) {
       setToastData({
         status: 'success',
         message: result.message || 'Signup successful!',
       })
-
-    // Dismiss Toast after 3 seconds
-      setTimeout(() => {
-        setToastData(null);
-      }, 3000)
-
       // Redirect after 2 seconds
       setTimeout(() => {
         router.push('/sign-in');
@@ -54,14 +48,14 @@ export default function Signup() {
       setToastData({
         status: 'error',
         message: result.message || 'Signup failed',
-      });
+      })
     }
 
     setTimeout(() => {
-      setToastData(null);
+      setToastData(null)
     }, 3000)
 
-    setLoading(false);
+    setLoading(false)
   }
 
   return (
@@ -178,7 +172,7 @@ export default function Signup() {
 
       {/* Already have an account? */}
       <p className="text-center text-gray-500 mt-4">
-        Already have an account?{' '}
+        Already have an account? {' '}
         <Link href="/sign-in" className="text-blue-600 hover:underline">
           Sign in
         </Link>

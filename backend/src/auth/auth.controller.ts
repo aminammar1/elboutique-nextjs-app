@@ -1,8 +1,17 @@
-import { Controller, Post, Body, Put, UseGuards, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Put,
+  UseGuards,
+  Param,
+  Res,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signupdto';
 import { LoginDto } from './dto/logindto';
-import { RefreshTokenDto } from './dto/refresh-tokensdto';
+import { Response, Request } from 'express';
 import {
   ForgetPasswordDto,
   ResetPasswordDto,
@@ -20,13 +29,22 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() Credentials: LoginDto) {
-    return this.authService.login(Credentials);
+  async login(@Body() Credentials: LoginDto, @Res() res: Response) {
+    try {
+      const result = await this.authService.login(Credentials, res);
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(401).json({ message: error.message });
+    }
   }
 
   @Post('refresh')
-  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
+  async refreshToken(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.cookies?.refresh_token;
+    if (!refreshToken) {
+      return res.status(401).json({ message: 'No refresh token found' });
+    }
+    return this.authService.refreshTokens(refreshToken, res);
   }
 
   /** Request Password Reset (Send OTP) */

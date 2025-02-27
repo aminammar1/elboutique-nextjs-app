@@ -1,9 +1,10 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@mui/material'
+import { Button } from '@/components/custom/Button'
 import { CiLogin, CiSearch, CiShoppingCart, CiUser } from 'react-icons/ci'
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
 
 export default function IconsGroups({
   openSearchBar,
@@ -12,10 +13,11 @@ export default function IconsGroups({
   setOpenCartBar,
 }) {
   const router = useRouter()
+  const { user } = useSelector((state) => state.user)
 
   return (
     <div className="flex items-center gap-12 relative">
-        <div className="inline-flex items-center gap-1">
+        <div className="inline-flex items-center gap-6">
         <Button
             variant="nostyle"
             size='icon'
@@ -35,6 +37,12 @@ export default function IconsGroups({
             0
             </span>
         </Button>
+        
+        {user ? (
+            <Button variant="nostyle" size='icon' onClick={() => router.push('/account/dashboard')} className=" hidden lg:block relative hover:scale-110 transform transition-transform duration-300">
+            <CiUser size={40} /> 
+            </Button>
+        ) : (
         <Button
             variant="nostyle"
             size='icon'
@@ -43,6 +51,7 @@ export default function IconsGroups({
         >
             <CiLogin size={40} />
         </Button>
+        )}
 
     </div>
     </div>

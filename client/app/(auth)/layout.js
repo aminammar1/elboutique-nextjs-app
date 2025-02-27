@@ -4,7 +4,6 @@ import React from 'react'
 import { MoveLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@mui/material'
-import { Toaster } from 'react-hot-toast'
 
 export default function Layout({ children }) {
   const router = useRouter()
@@ -24,7 +23,6 @@ export default function Layout({ children }) {
           Go Back
         </Button>
       </div>
-      <Toaster />
       {children}
     </div>
   )

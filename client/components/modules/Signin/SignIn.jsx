@@ -7,9 +7,19 @@ import { signinSchema } from "@/lib/signinSchema"
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6"
 import { FaFacebook, FaGoogle } from "react-icons/fa"
 import Link from "next/link"
+import {signin} from '@/actions/auth'
+import { useDispatch } from "react-redux"
+import Toast from '@/components/custom/Toast'
+import { ClipLoader } from 'react-spinners'
+import { useRouter } from 'next/navigation'
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [toastData, setToastData] = useState(null)
+  const dispatch = useDispatch()
+  const router = useRouter()
+  
 
   const {
     register,
@@ -20,13 +30,45 @@ export default function Signin() {
   });
 
   const onSubmit = (data) => {
-    console.log("Sign-in Data:", data)
+    setLoading(true)
+  
+    dispatch(signin(data)).then((result) => {
+      
+      if (result.success) {
+        setToastData({
+          status: 'success',
+          message: result.message || 'Signin successful!',
+        })
+  
+        setTimeout(() => {
+          router.push('/');
+        }, 2000)
+      } else {
+        setToastData({
+          status: 'error',
+          message: result.message || 'Signin failed',
+        })
+      }
+  
+      setTimeout(() => {
+        setToastData(null);
+      }, 3000)
+  
+      setLoading(false);
+    })
   }
+  
 
   return (
     <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-semibold text-center text-gray-900">Sign in to EL Boutique</h2>
       <p className="text-center text-gray-500 mb-4">Welcome back! Please sign in to continue</p>
+
+
+      {/* Show Toast if there is a message */}
+        {toastData && (
+          <Toast status={toastData.status} message={toastData.message} />
+        )}
 
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
         {/* Email Field */}
@@ -75,8 +117,10 @@ export default function Signin() {
         </div>
 
         {/* Submit Button */}
-        <button className="w-full p-3 bg-black text-white rounded-lg hover:bg-gray-800" type="submit">
-          Sign in →
+        <button className="w-full p-3 bg-black text-white rounded-lg hover:bg-gray-800" 
+        type="submit"
+        disabled={loading}>
+         {loading ? <ClipLoader color="#fff" size={20} /> : ' Sign in →'}
         </button>
       </form>
 
