@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { ResetToken, ResetTokenSchema } from './schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
+import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { MailService } from 'src/services/mail.service';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService],
+  providers: [AuthService, MailService , UploadService],
 })
 export class AuthModule {}

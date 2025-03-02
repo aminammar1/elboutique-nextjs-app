@@ -19,8 +19,11 @@ const userSlice = createSlice({
       state.isAuthenticated = false
       Cookies.remove('access_token') // Remove token on logout
     },
+    setUserDetails: (state, action) => {
+      state.user = action.payload
+    },
   },
 })
 
-export const { loginSuccess, logout } = userSlice.actions
+export const { loginSuccess, logout, setUserDetails } = userSlice.actions
 export default userSlice.reducer

@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response as ExpressResponse } from 'express';
 import { ResetToken } from './schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private ResetTokenModel: Model<ResetToken>,
     private jwtService: JwtService,
     private mailService: MailService,
+    private uploadService: UploadService,
   ) {}
 
   /** SignUp */
@@ -213,5 +215,44 @@ export class AuthService {
     await user.save();
 
     return { message: 'Password reset successfully' , success: true, error: false };
+  }
+
+  /** Upload User Image  */
+
+  async uploadAvatar(userId: string, file: Express.Multer.File) {
+    try {
+      const uploadResult = await this.uploadService.uploadImage(file, 'avatars');
+
+      await this.UserModel.findByIdAndUpdate(userId, {
+        avatar: uploadResult.url,
+      });
+
+      return {
+        message: 'Avatar uploaded successfully',
+        success: true,
+        error: false,
+        data: {
+          _id: userId,
+          avatar: uploadResult.url,
+        },
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Internal Server Error');
+    }
+  }
+
+
+  /** Fetch User Details  */
+
+  async fetchUserDetails(userId: string) {
+    try {
+      const user = await this.UserModel.findById(userId).select('-password'); // Exclude password
+      if (!user) {
+        throw new Error('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch user details');
+    }
   }
 }

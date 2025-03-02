@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import config from './config/config';
+import { UploadModule } from './upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +30,7 @@ import config from './config/config';
       inject: [ConfigService],
     }),
     AuthModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

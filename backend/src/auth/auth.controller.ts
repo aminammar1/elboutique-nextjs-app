@@ -7,8 +7,12 @@ import {
   Param,
   Res,
   Req,
+  UploadedFile,
+  UseInterceptors,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SignUpDto } from './dto/signupdto';
 import { LoginDto } from './dto/logindto';
 import { Response, Request } from 'express';
@@ -70,5 +74,31 @@ export class AuthController {
       resetPasswordDto.newPassword,
       resetPasswordDto.confirmPassword,
     );
+  }
+
+  /** Profile Avatar Upload  */
+
+  @Put('upload-avatar')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  async uploadAvatar(
+    @Req() req: Request,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.authService.uploadAvatar(req.userId, file);
+  }
+
+  @Get('fetch-user-details')
+  @UseGuards(AuthGuard)
+  async fetchUserDetails(@Req() req: Request) {
+    const userId = req.userId; // Get userId from the AuthGuard
+    return this.authService.fetchUserDetails(userId);
+  }
+
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    // Clear access_token cookie
+    res.clearCookie('access_token');
+    return res.send({ success: true, message: 'Logged out successfully' });
   }
 }

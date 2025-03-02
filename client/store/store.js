@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from '@/lib/storage'
-import userReducer from './UserSlice'
+import userReducer from './userSlice'
 
 const persistConfig = {
   key: 'root',
@@ -9,14 +9,15 @@ const persistConfig = {
   whitelist: ['user'], // only user will be persisted
 }
 
-const UserReducer  = persistReducer(persistConfig, userReducer)
+const UserReducer = persistReducer(persistConfig, userReducer)
 
-export const store = configureStore({
-  reducer: {
-    user: UserReducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
-})
+// Prevent store from initializing on the server
+const makeStore = () =>
+  configureStore({
+    reducer: { user: UserReducer },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }),
+  })
 
+export const store = makeStore()
 export const persistor = persistStore(store)

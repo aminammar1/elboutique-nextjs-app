@@ -1,24 +1,66 @@
 'use client'
+import { useState, useRef, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { uploadAvatar } from '@/actions/upload'
+import { signout } from '@/actions/auth'
 import { cn } from '@/lib/utils'
 import {
   BadgeDollarSign,
   LayoutDashboard,
   BookUser,
-  AlignJustify,
   LogOut,
-  User,
 } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
-import { Button } from '@mui/material'
-
+import { loginSuccess } from '@/store/userSlice'
+import { useRouter } from 'next/navigation'
+import { fetchUserDetails } from '@/actions/User'
 
 export default function SidebarAccount() {
-  const [openSidebar, setSidebar] = useState(false)
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user)
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  const [loading, setLoading] = useState(false)
+  const fileInputRef = useRef(null)
+  const router = useRouter()
 
-  const handleSignOut = () => {
-    // Handle logout logic here
-    console.log('User signed out')
+  const handleUploadClick = () => {
+    fileInputRef.current.click()
+  }
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setLoading(true)
+      try {
+        const formData = new FormData()
+        formData.append('avatar', file)
+
+        const response = await uploadAvatar(formData)
+        if (response.success) {
+          dispatch(loginSuccess({ ...user, avatar: response.data.avatar }))
+        }
+      } catch (error) {
+        console.error('Upload failed:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchUserDetails()) // Fetch user details
+    }
+  }, [dispatch, isAuthenticated])
+
+  const handleLogout = () => {
+    dispatch(signout()).then((result) => {
+      if (result.success) {
+        router.push('/')
+      } else {
+        console.error(result.message)
+      }
+    })
   }
 
   return (
@@ -31,9 +73,28 @@ export default function SidebarAccount() {
       >
         <div className="h-full flex flex-col items-start gap-4 overflow-y-auto bg-gray-50 py-4">
           <ul className="flex flex-col gap-4 w-full ps-12">
+            {/* Avatar Upload */}
             <li className="flex ps-12">
-              <div className="flex justify-center items-center">
-                <User className="w-10 h-10 text-gray-600" />
+              <div
+                className="relative flex justify-center items-center rounded-full bg-gray-100 p-2 cursor-pointer"
+                onClick={handleUploadClick}
+              >
+                {loading ? (
+                  <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                ) : (
+                  <img
+                    src={user?.avatar || '/assets/images/default-avatar.png'}
+                    alt="User Avatar"
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
               </div>
             </li>
 
@@ -67,9 +128,10 @@ export default function SidebarAccount() {
               </Link>
             </li>
 
+            {/* Logout */}
             <li
               className="flex items-center p-2 cursor-pointer hover:text-black"
-              onClick={handleSignOut}
+              onClick={handleLogout}
             >
               <LogOut />
               <h6 className="ms-3">Sign out </h6>

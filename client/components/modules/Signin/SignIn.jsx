@@ -33,6 +33,7 @@ export default function Signin() {
     setLoading(true)
   
     dispatch(signin(data)).then((result) => {
+      console.log(result)
       
       if (result.success) {
         setToastData({
@@ -63,8 +64,6 @@ export default function Signin() {
     <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-semibold text-center text-gray-900">Sign in to EL Boutique</h2>
       <p className="text-center text-gray-500 mb-4">Welcome back! Please sign in to continue</p>
-
-
       {/* Show Toast if there is a message */}
         {toastData && (
           <Toast status={toastData.status} message={toastData.message} />
