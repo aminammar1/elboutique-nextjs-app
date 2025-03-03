@@ -5,13 +5,14 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { signinSchema } from "@/lib/signinSchema"
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6"
-import { FaFacebook, FaGoogle } from "react-icons/fa"
 import Link from "next/link"
 import {signin} from '@/actions/auth'
 import { useDispatch } from "react-redux"
 import Toast from '@/components/custom/Toast'
 import { ClipLoader } from 'react-spinners'
 import { useRouter } from 'next/navigation'
+import { GoogleLoginButton } from "./GoogleAuth"
+import { FacebookLoginButton } from "./FacebookAuth"
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false)
@@ -27,7 +28,7 @@ export default function Signin() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(signinSchema),
-  });
+  })
 
   const onSubmit = (data) => {
     setLoading(true)
@@ -42,7 +43,7 @@ export default function Signin() {
         })
   
         setTimeout(() => {
-          router.push('/');
+          router.push('/')
         }, 2000)
       } else {
         setToastData({
@@ -52,10 +53,10 @@ export default function Signin() {
       }
   
       setTimeout(() => {
-        setToastData(null);
+        setToastData(null)
       }, 3000)
   
-      setLoading(false);
+      setLoading(false)
     })
   }
   
@@ -132,12 +133,8 @@ export default function Signin() {
 
       {/* Social Login Buttons */}
       <div className="flex gap-3">
-          <button className="flex-1 border border-gray-300 text-gray-700 flex items-center justify-center gap-2 p-3 rounded-lg hover:bg-gray-200">
-            <FaFacebook  className="text-xl" /> Facebook
-          </button>
-          <button className="flex-1 border border-gray-300 text-gray-700 flex items-center justify-center gap-2 p-3 rounded-lg hover:bg-gray-200">
-            <FaGoogle className="text-xl" /> Google
-          </button>
+        <GoogleLoginButton />
+        <FacebookLoginButton />
         </div>
 
         <p className="text-center text-gray-500 mt-4">

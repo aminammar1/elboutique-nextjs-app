@@ -1,5 +1,14 @@
 import axios from 'axios'
 import { loginSuccess, logout } from '../store/userSlice'
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+} from 'firebase/auth'
+import {app} from '../lib/firbase'
+
+const auth = getAuth(app)
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -60,15 +69,14 @@ export const refreshAccessToken = async () => {
 /**Logout  */
 export const signout = () => async (dispatch) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/api/auth/logout`,
-      {},
+    const response = await axios.post( `${API_URL}/api/auth/logout`,{},
       {
         withCredentials: true,
       }
     )
 
     dispatch(logout())
+    
     return {
       success: true,
       message: response.data?.message || 'Logged out successfully',
@@ -79,5 +87,48 @@ export const signout = () => async (dispatch) => {
       success: false,
       message: error.response?.data?.message || 'Logout failed',
     }
+  }
+}
+
+/** Signin With google */
+
+export const googleAuth = () => async (dispatch) => {
+  try {
+    const provider = new GoogleAuthProvider()
+    const result = await signInWithPopup(auth, provider)
+    const user = result.user
+    console.log(user)
+    
+    const { data } = await axios.post(`${API_URL}/api/auth/google`, {
+      email: user.email,
+      name: user.displayName,
+      photo: user.photoURL,
+    }, { withCredentials: true })
+
+    dispatch(loginSuccess({ id: user.uid  }))
+    return { success: true, message: data.message }
+  } catch (error) {
+    return { success: false, message: error.message || "Google login failed" }
+  }
+}
+
+/*** Sign in with Facebook  */
+
+export const facebookAuth = () => async (dispatch) => {
+  try {
+    const provider = new FacebookAuthProvider()
+    const result = await signInWithPopup(auth, provider)
+    const user = result.user
+    
+    const { data } = await axios.post(`${API_URL}/api/auth/facebook`, {
+      email: user.email,
+      name: user.displayName,
+      photo: user.photoURL,
+    }, { withCredentials: true })
+
+    dispatch(loginSuccess({ id: user.uid }))
+    return { success: true, message: data.message }
+  } catch (error) {
+    return { success: false, message: error.message || "Facebook login failed" }
   }
 }

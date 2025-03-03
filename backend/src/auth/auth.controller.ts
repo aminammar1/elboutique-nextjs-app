@@ -101,4 +101,16 @@ export class AuthController {
     res.clearCookie('access_token');
     return res.send({ success: true, message: 'Logged out successfully' });
   }
+
+  @Post('google')
+  async googleLogin(@Body() body: { email: string; name: string; photo: string }, @Res() res: Response) {
+    const result = await this.authService.googleAuth(body, res);
+    return res.status(200).json(result);
+  }
+
+  @Post('facebook')
+  async facebookLogin(@Body() body: { email: string; name: string; photo: string }, @Res() res: Response) {
+    const result = await this.authService.facebookAuth(body, res);
+    return res.status(200).json(result);
+  }
 }

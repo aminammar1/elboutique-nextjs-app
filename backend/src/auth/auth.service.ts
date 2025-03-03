@@ -130,6 +130,10 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  private generatePassword() {
+    return crypto.randomBytes(10).toString('hex');
+  }
+
 
   /**Forget Password */
   async requestPasswordReset(email: string) {
@@ -246,13 +250,85 @@ export class AuthService {
 
   async fetchUserDetails(userId: string) {
     try {
-      const user = await this.UserModel.findById(userId).select('-password'); // Exclude password
+      const user = await this.UserModel.findById(userId)
+        .select('-password') // Exclude password
+        .lean(); 
+  
       if (!user) {
         throw new Error('User not found');
       }
-      return user;
+  
+      return {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar, 
+      };
     } catch (error) {
       throw new Error(error.message || 'Failed to fetch user details');
+    }
+  }
+  
+
+  async googleAuth(data: { email: string; name: string; photo: string }, res: any) {
+    try {
+      const { email, name, photo } = data;
+      let user = await this.UserModel.findOne({ email });
+
+      if (user) {
+        const tokens = this.generateTokens(user._id.toString());
+
+        res.cookie('access_token', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'None' });
+        res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'None' });
+
+        return { message: 'Login with Google successfully', success: true, data: tokens };
+      }
+
+      const generatedPassword = this.generatePassword();
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+      const newUser = new this.UserModel({ name, email, password: hashedPassword, avatar: photo });
+      await newUser.save();
+
+      const tokens = this.generateTokens(newUser._id.toString());
+
+      res.cookie('access_token', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'None' });
+      res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'None' });
+
+      return { message: 'Login with Google successfully', success: true, data: tokens };
+    } catch (error) {
+      throw new UnauthorizedException('Error while logging in with Google');
+    }
+  }
+
+  async facebookAuth(data: { email: string; name: string; photo: string }, res: any) {
+    try {
+      const { email, name, photo } = data;
+      let user = await this.UserModel.findOne({ email });
+
+      if (user) {
+        const tokens = this.generateTokens(user._id.toString());
+
+        res.cookie('access_token', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'None' });
+        res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'None' });
+
+        return { message: 'Login with Facebook successfully', success: true, data: tokens };
+      }
+
+      const generatedPassword = this.generatePassword();
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+      const newUser = new this.UserModel({ name, email, password: hashedPassword, avatar: photo });
+      await newUser.save();
+
+      const tokens = this.generateTokens(newUser._id.toString());
+
+      res.cookie('access_token', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'None' });
+      res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'None' });
+
+      return { message: 'Login with Facebook successfully', success: true, data: tokens };
+    } catch (error) {
+      throw new UnauthorizedException('Error while logging in with Facebook');
     }
   }
 }
