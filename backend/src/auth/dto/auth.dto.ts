@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength   } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength , Length , Validate  } from 'class-validator';
 
 export class ChangePasswordDto {
   @IsNotEmpty()
@@ -12,25 +12,29 @@ export class ChangePasswordDto {
 }
 
 export class ForgetPasswordDto {
-  @IsEmail()
+  @IsEmail({}, { message: 'Email invalide' })
+  @IsNotEmpty({ message: 'Email requis' })
   email: string;
 }
 
 export class VerifyOtpDto {
-  @IsEmail()
+  @IsEmail({}, { message: 'Invalid email' })
+  @IsNotEmpty({ message: 'Email is required' })
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'OTP is required' })
+  @IsString({ message: 'OTP must be a string' })
+  @Length(6, 6, { message: 'OTP must be exactly 6 digits' })
   otp: string;
 }
 
 export class ResetPasswordDto {
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
+  @IsNotEmpty({ message: 'New password is required' })
+  @IsString({ message: 'New password must be a string' })
+  @MinLength(6, { message: 'New password must be at least 6 characters' })
   newPassword: string;
 
-  @IsString()
+  @IsNotEmpty({ message: 'Confirm password is required' })
+  @IsString({ message: 'Confirm password must be a string' })
   confirmPassword: string;
 }

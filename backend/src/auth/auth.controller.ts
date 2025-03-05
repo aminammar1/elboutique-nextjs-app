@@ -76,6 +76,13 @@ export class AuthController {
     );
   }
 
+  /** Rsend OTP code  */
+
+  @Post('resend-otp')
+  async resendOtp(@Body() { email }: { email: string }) {
+    return this.authService.resendOTP(email);
+  }
+
   /** Profile Avatar Upload  */
 
   @Put('upload-avatar')
@@ -103,13 +110,19 @@ export class AuthController {
   }
 
   @Post('google')
-  async googleLogin(@Body() body: { email: string; name: string; photo: string }, @Res() res: Response) {
+  async googleLogin(
+    @Body() body: { email: string; name: string; photo: string },
+    @Res() res: Response,
+  ) {
     const result = await this.authService.googleAuth(body, res);
     return res.status(200).json(result);
   }
 
   @Post('facebook')
-  async facebookLogin(@Body() body: { email: string; name: string; photo: string }, @Res() res: Response) {
+  async facebookLogin(
+    @Body() body: { email: string; name: string; photo: string },
+    @Res() res: Response,
+  ) {
     const result = await this.authService.facebookAuth(body, res);
     return res.status(200).json(result);
   }

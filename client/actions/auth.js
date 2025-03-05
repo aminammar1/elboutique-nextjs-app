@@ -52,9 +52,7 @@ export const signin = (credentials) => async (dispatch) => {
 
 export const refreshAccessToken = async () => {
   try {
-    const response = await axios.post(
-      `${API_URL}/api/auth/refresh`,
-      {},
+    const response = await axios.post(`${API_URL}/api/auth/refresh`,{},
       {
         withCredentials: true,
       }
@@ -132,3 +130,54 @@ export const facebookAuth = () => async (dispatch) => {
     return { success: false, message: error.message || "Facebook login failed" }
   }
 }
+
+/** Request Password Reset (Send OTP)  */
+
+export const requestPasswordReset = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/auth/forgot-password`, {email})
+    return { success: true, message: response.data.message }
+  } catch (error) {
+    return { success: false, message: error.response?.data?.message || 'Failed to send OTP' }
+  }
+}
+
+
+/** Verify OTP  */
+
+export const verifyOTP = async (email, otp) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/auth/verify-otp`, { email, otp });
+    return { success: true, message: response.data.message , userId: response.data.userId };
+  } catch (error) {
+    return { 
+      success: false, 
+      message: error.response?.data?.message || 'Invalid OTP. Please try again.' 
+    }
+  }
+}
+
+/** Resend code  */ 
+
+export const resendOTP = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/auth/resend-otp`, { email })
+    return { success: true, message: response.data.message }
+  } catch (error) {
+    return { 
+      success: false, 
+      message: error.response?.data?.message || 'Failed to resend OTP' 
+    }
+  }
+}
+/** Reset Password  */
+
+export const resetPassword = async (userId , newPassword , confirmPassword) => {
+  try {
+    const response = await axios.put(`${API_URL}/api/auth/reset-password/${userId}`, { newPassword, confirmPassword });
+    return { success: true, message: response.data.message };
+  } catch (error) {
+    return { success: false, message: error.response?.data?.message || 'Failed to reset password' };
+  }
+}
+

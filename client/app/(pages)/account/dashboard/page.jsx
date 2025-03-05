@@ -1,14 +1,20 @@
 import { ShoppingBag } from 'lucide-react'
-import { MdLocalShipping, MdMoney } from "react-icons/md"
-import * as React from "react"
+import { MdLocalShipping, MdMoney } from 'react-icons/md'
+import * as React from 'react'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbSeparator, BreadcrumbList , BreadcrumbPage} from '@/components/custom/costumeUI'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from '@/components/custom/costumeUI'
 
 
 
-export default function Page() {
-    return(
+export default function DashboardPat() {
+  return (
     <>
       <section className="my-10">
         <Container>
@@ -19,7 +25,7 @@ export default function Page() {
               </Link>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-xl font-bold hover:text-gray-700"> 
+                <BreadcrumbPage className="text-xl font-bold hover:text-gray-700">
                   Dashboard
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -43,7 +49,7 @@ export default function Page() {
               <div className="flex gap-4 items-center">
                 <MdLocalShipping className="font-bold h-10 w-10" />
                 <span className="text-2xl text-gray-400 dark:text-gray-500">
-                   0
+                  0
                 </span>
                 received
               </div>
@@ -61,5 +67,5 @@ export default function Page() {
         </div>
       </div>
     </>
-    )
+  )
 }

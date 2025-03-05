@@ -195,6 +195,7 @@ export class AuthService {
     await this.ResetTokenModel.deleteOne({ _id: token._id });
 
     return {
+      success : true,
       message: 'OTP verified successfully. You can now reset your password.',
       userId: user._id,
     };
@@ -220,6 +221,44 @@ export class AuthService {
 
     return { message: 'Password reset successfully' , success: true, error: false };
   }
+
+  /** Resend OTP CODE  */ 
+
+    async resendOTP(email: string) {
+    const user = await this.UserModel.findOne({ email });
+
+    if (!user) {
+      throw new UnauthorizedException({
+        message: 'Email does not exist',
+        success: false,
+        error: true,
+      });
+    }
+
+    // Generate new OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const expiryDate = new Date(Date.now() + 10 * 60 * 1000); // Valid for 10 min
+
+    // Delete old OTP (if any)
+    await this.ResetTokenModel.deleteMany({ userId: user._id });
+
+    // Save new OTP
+    await this.ResetTokenModel.create({
+      token: otp,
+      userId: user._id,
+      expiryDate,
+    });
+
+    // Send OTP via email
+    await this.mailService.sendOTPEmail(email, otp);
+
+    return { 
+      message: 'A new OTP has been sent to your email.',
+      success: true,
+      error: false
+    };
+    }
+
 
   /** Upload User Image  */
 

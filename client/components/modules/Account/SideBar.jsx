@@ -14,6 +14,8 @@ import Link from 'next/link'
 import { loginSuccess } from '@/store/userSlice'
 import { useRouter } from 'next/navigation'
 import { fetchUserDetails } from '@/actions/User'
+import ProfileDropdown from './ProfileDropdown'
+import ManageAccount from './manage-account/ManageAccount'
 
 export default function SidebarAccount() {
   const dispatch = useDispatch()
@@ -22,6 +24,7 @@ export default function SidebarAccount() {
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef(null)
   const router = useRouter()
+  const [showManageAccount, setShowManageAccount] = useState(false)
 
   const handleUploadClick = () => {
     fileInputRef.current.click()
@@ -64,6 +67,7 @@ export default function SidebarAccount() {
   }
 
   return (
+    <>
     <div className="!z-1 flex flex-col">
       <aside
         className={cn(
@@ -71,31 +75,11 @@ export default function SidebarAccount() {
         )}
         aria-label="Sidebar"
       >
-        <div className="h-full flex flex-col items-start gap-4 overflow-y-auto bg-gray-50 py-4">
+        <div className="h-full flex flex-col items-start gap-4 bg-gray-50 py-4">
           <ul className="flex flex-col gap-4 w-full ps-12">
             {/* Avatar Upload */}
             <li className="flex ps-12">
-              <div
-                className="relative flex justify-center items-center rounded-full bg-gray-100 p-2 cursor-pointer"
-                onClick={handleUploadClick}
-              >
-                {loading ? (
-                  <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                ) : (
-                  <img
-                    src={user?.avatar || '/assets/images/default-avatar.png'}
-                    alt="User Avatar"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                )}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </div>
+            <ProfileDropdown setShowManageAccount={setShowManageAccount} />
             </li>
 
             <li>
@@ -140,5 +124,14 @@ export default function SidebarAccount() {
         </div>
       </aside>
     </div>
+     {/* Modal overlay */}
+     {showManageAccount && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-5xl h-[90%] max-h-[700px] overflow-hidden">
+            <ManageAccount close={() => setShowManageAccount(false)} />
+          </div>
+        </div>
+      )}
+    </>
   )
 }
