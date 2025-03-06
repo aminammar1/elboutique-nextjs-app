@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
+import { User, UserSchema } from '../user/schemas/user.schema';
 import { ResetToken, ResetTokenSchema } from './schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
-import { UploadService } from 'src/upload/upload.service';
 
 @Module({
   imports: [
@@ -21,6 +20,6 @@ import { UploadService } from 'src/upload/upload.service';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService , UploadService],
+  providers: [AuthService, MailService ],
 })
 export class AuthModule {}

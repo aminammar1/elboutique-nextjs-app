@@ -141,8 +141,6 @@ export const requestPasswordReset = async (email) => {
     return { success: false, message: error.response?.data?.message || 'Failed to send OTP' }
   }
 }
-
-
 /** Verify OTP  */
 
 export const verifyOTP = async (email, otp) => {
@@ -171,7 +169,6 @@ export const resendOTP = async (email) => {
   }
 }
 /** Reset Password  */
-
 export const resetPassword = async (userId , newPassword , confirmPassword) => {
   try {
     const response = await axios.put(`${API_URL}/api/auth/reset-password/${userId}`, { newPassword, confirmPassword });

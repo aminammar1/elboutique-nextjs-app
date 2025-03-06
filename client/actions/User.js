@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export const fetchUserDetails = () => async (dispatch) => {
   try {
-    const response = await axios.get(`${API_URL}/api/auth/fetch-user-details`, {
+    const response = await axios.get(`${API_URL}/api/user/fetch-user-details`, {
       withCredentials: true,
     })
 

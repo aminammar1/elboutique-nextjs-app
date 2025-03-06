@@ -15,13 +15,15 @@ export class MailService {
       },
     });
 
-    this.transporter.verify((error) => {
+    /*this.transporter.verify((error) => {
       if (error) {
         console.error('SMTP connection error:', error);
       } else {
         console.log('SMTP connected.');
       }
     });
+  }:  
+  */
   }
 
   async sendOTPEmail(to: string, otp: string) {
