@@ -1,5 +1,5 @@
 import { ShoppingBag } from 'lucide-react'
-import { MdLocalShipping, MdMoney } from 'react-icons/md'
+import { MdLocalShipping, MdCreditCard } from 'react-icons/md'
 import * as React from 'react'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
@@ -56,7 +56,7 @@ export default function DashboardPat() {
             </div>
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <div className="flex gap-4 items-center">
-                <MdMoney className="font-bold h-10 w-10" />
+                <MdCreditCard className="font-bold h-10 w-10" />
                 <span className="text-2xl text-gray-400 dark:text-gray-500">
                   0+
                 </span>

@@ -1,7 +1,6 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
+import { useState,useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { uploadAvatar } from '@/actions/upload'
 import { signout } from '@/actions/auth'
 import { cn } from '@/lib/utils'
 import {
@@ -11,7 +10,6 @@ import {
   LogOut,
 } from 'lucide-react'
 import Link from 'next/link'
-import { loginSuccess } from '@/store/userSlice'
 import { useRouter } from 'next/navigation'
 import { fetchUserDetails } from '@/actions/User'
 import ProfileDropdown from './ProfileDropdown'
@@ -19,36 +17,9 @@ import ManageAccount from './manage-account/ManageAccount'
 
 export default function SidebarAccount() {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.user)
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
-  const [loading, setLoading] = useState(false)
-  const fileInputRef = useRef(null)
   const router = useRouter()
   const [showManageAccount, setShowManageAccount] = useState(false)
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click()
-  }
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setLoading(true)
-      try {
-        const formData = new FormData()
-        formData.append('avatar', file)
-
-        const response = await uploadAvatar(formData)
-        if (response.success) {
-          dispatch(loginSuccess({ ...user, avatar: response.data.avatar }))
-        }
-      } catch (error) {
-        console.error('Upload failed:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-  }
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -124,8 +95,8 @@ export default function SidebarAccount() {
         </div>
       </aside>
     </div>
-     {/* Modal overlay */}
-     {showManageAccount && (
+     {/* Account Management Modal overlay */}
+      {showManageAccount && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-[90%] max-w-5xl h-[90%] max-h-[700px] overflow-hidden">
             <ManageAccount close={() => setShowManageAccount(false)} />

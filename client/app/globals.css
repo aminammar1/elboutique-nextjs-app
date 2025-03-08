@@ -129,7 +129,6 @@ input[type=range] {
   input[type=range]:focus::-ms-fill-upper {
     background: #367ebd;
   }
- 
 
 /* Scrollbar style */
 ::-webkit-scrollbar {
@@ -153,14 +152,3 @@ input[type=range] {
 .MuiRating-root span{
   font-size: 30px;
 } 
-
-
-/* clerk  */
-
-.cl-internal-16vtwdp{
-  display: none;
-}
-.cl-userButtonAvatarBox{
-  height: 100px;
-  width: 100px
-}

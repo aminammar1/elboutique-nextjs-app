@@ -1,12 +1,15 @@
 'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUserDetails } from '@/actions/User'
+import { fetchUserDetails, updateProfile, deleteUser } from '@/actions/User'
 import { uploadAvatar } from '@/actions/upload'
 import { useRouter } from 'next/navigation'
-import { Shield, User, Link, X, Check, Upload, Trash2 } from 'lucide-react'
-import { FaGoogle } from 'react-icons/fa'
-import { loginSuccess } from '@/store/userSlice'
+import { Shield, User, Link, X, Check, Upload, Trash2, Mail } from 'lucide-react'
+import { loginSuccess, logout } from '@/store/userSlice'
+import ChangePassword from './ChangePassword' 
+import ConfirmDelete from '@/components/custom/DeleteDialog'
+import Toast from '@/components/custom/Toast'
 
 export default function ManageAccount({ close }) { 
   const dispatch = useDispatch()
@@ -14,16 +17,20 @@ export default function ManageAccount({ close }) {
   const [activeTab, setActiveTab] = useState('profile')
   const router = useRouter()
   const [editName, setEditName] = useState(false)
+  const [editEmail, setEditEmail] = useState(false)
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false) 
   const fileInputRef = useRef(null)
+  const [toastData, setToastData] = useState(null)
 
   useEffect(() => {
     dispatch(fetchUserDetails())
-    if (user?.name) {
-      setName(user.name)
-    }
-  }, [dispatch, user?.name])
+    if (user?.name) setName(user.name)
+    if (user?.email) setEmail(user.email)
+  }, [dispatch, user?.name, user?.email])
 
   const handleUploadClick = () => {
     fileInputRef.current.click()
@@ -40,33 +47,106 @@ export default function ManageAccount({ close }) {
         const response = await uploadAvatar(formData)
         if (response.success) {
           dispatch(loginSuccess({ ...user, avatar: response.data.avatar }))
+          setToastData({
+            status: 'success',
+            message: response.message || 'Avatar uploaded successfully',
+          })
+          setTimeout(() => {
+            setToastData(null)
+          }, 3000)
         }
       } catch (error) {
-        console.error('Upload failed:', error)
+
+        setToastData({
+          status: 'error',
+          message: error.message || 'Failed to upload avatar',
+        })
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
+
       } finally {
         setLoading(false)
       }
     }
   }
 
-  const handleNameSave = () => {
-    // Add your name update logic here
-    // For now, just toggle edit mode off
-    setEditName(false)
+  const handleProfileUpdate = () => {
+    dispatch(updateProfile({ name, email })).then((response) => {
+        if (response.success) {
+          dispatch(loginSuccess({ ...user, name, email }))
+          setEditName(false)
+          setEditEmail(false) 
+          
+          setToastData({
+            status: 'success',
+            message: response.message || 'Profile updated successfully',
+          })
+        }
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
+      })
+      .catch((error) => {
+        setToastData({
+          status: 'error',
+          message: error.message || 'Failed to update profile',
+        })
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
+      })
+  }
+
+  const handleDeleteAccount = async () => {
+    setLoading(true)
+    try {
+      const response = await deleteUser()
+      setLoading(false)
+      setShowDeleteDialog(false)
+
+      if (response.success) {
+
+        setToastData({
+          status: 'success',
+          message: response.message || 'Account deleted successfully',
+        })
+        dispatch(logout())
+        router.push("/")
+      }
+    } catch (error) {
+      setLoading(false)
+      setShowDeleteDialog(false)
+
+      setToastData({
+        status: 'error',
+        message: error.message || 'Failed to delete account',
+      })
+
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
+    }
+    finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="flex h-full">
-      {/* Left sidebar */}
       <div className="w-64 bg-gray-50 p-6 border-r">
         <div className="flex flex-col h-full">
-          <h2 className="text-xl font-semibold">Account</h2>
+          <h2 className="text-xl font-semibold text-black">Account</h2>
           <p className="text-sm text-gray-600 mt-1">Manage your account info.</p>
-          
+
+
+          {/* Show Toast if there is a message */}
+          {toastData && <Toast status={toastData.status} message={toastData.message} />}
+
           <div className="mt-8 space-y-2">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`flex items-center gap-3 w-full py-2 px-4 rounded-md ${
+              className={`flex items-center gap-3 w-full py-2 px-4 rounded-md text-black ${
                 activeTab === 'profile' ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100'
               }`}
             >
@@ -75,7 +155,7 @@ export default function ManageAccount({ close }) {
             </button>
             <button
               onClick={() => setActiveTab('security')}
-              className={`flex items-center gap-3 w-full py-2 px-4 rounded-md ${
+              className={`flex items-center gap-3 w-full py-2 px-4 rounded-md text-black ${
                 activeTab === 'security' ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100'
               }`}
             >
@@ -85,26 +165,20 @@ export default function ManageAccount({ close }) {
           </div>
         </div>
       </div>
-      
-      {/* Main content */}
+
       <div className="flex-1 overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center border-b pb-4">
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold text-black">
               {activeTab === 'profile' ? 'Profile details' : 'Security settings'}
             </h2>
-            <button 
-              onClick={close}
-              className="p-1 rounded-full hover:bg-gray-100"
-            >
+            <button onClick={close} className="p-1 rounded-full hover:bg-gray-100">
               <X className="w-5 h-5" />
             </button>
           </div>
-          
-          {/* Profile content */}
+
           {activeTab === 'profile' && (
             <div className="py-4 space-y-6">
-              {/* Profile section */}
               <div className="flex items-center justify-between py-4">
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -137,7 +211,7 @@ export default function ManageAccount({ close }) {
                           className="border rounded px-2 py-1 text-sm"
                         />
                         <button 
-                          onClick={handleNameSave}
+                          onClick={handleProfileUpdate}
                           className="text-green-600 hover:text-green-700"
                         >
                           <Check className="w-4 h-4" />
@@ -155,30 +229,50 @@ export default function ManageAccount({ close }) {
                   Update profile
                 </button>
               </div>
-              
-              {/* Email addresses */}
+
+              {/* Email Section */}
               <div className="border-t border-b py-4">
-                <p className="text-sm text-gray-600 mb-3">Email addresses</p>
+                <p className="text-sm text-gray-600 mb-3">Email Address</p>
                 <div className="flex items-center justify-between">
-                  <p className="text-gray-800">{user?.email || 'user@example.com'}</p>
-                  <span className="text-xs text-green-600 flex items-center gap-1">
-                    <Check className="w-3 h-3" /> Connected
-                  </span>
+                  {editEmail ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="border rounded px-2 py-1 text-sm"
+                      />
+                      <button 
+                        onClick={handleProfileUpdate}
+                        className="text-green-600 hover:text-green-700"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-gray-800">{user?.email || 'user@example.com'}</p>
+                  )}
+                  <button 
+                    onClick={() => setEditEmail(true)} 
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Edit
+                  </button>
                 </div>
               </div>
-              
+
               {/* Connected accounts */}
               <div className="py-4">
                 <p className="text-sm text-gray-600 mb-3">Connected accounts</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <FaGoogle className="text-gray-600" />
+                    <Mail className="text-gray-600" />
                     <p className="text-gray-800">{user?.email || 'user@example.com'}</p>
                   </div>
                   <div className="flex items-center">
-                    <button className="text-blue-600 text-sm">
-                      •••
-                    </button>
+                  <span className="text-xs text-green-600 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Connected
+                  </span>
                   </div>
                 </div>
                 <button className="mt-3 text-blue-600 flex items-center gap-2 hover:underline text-sm">
@@ -187,14 +281,16 @@ export default function ManageAccount({ close }) {
               </div>
             </div>
           )}
-          
-          {/* Security content */}
-          {activeTab === 'security' && (
+           {/* Security content */}
+            {activeTab === 'security' && (
             <div className="py-4 space-y-6">
               <div className="bg-white p-4 rounded-md border">
-                <h3 className="font-medium mb-2">Password</h3>
+                <h3 className="font-medium mb-2 text-black">Password</h3>
                 <p className="text-gray-600 mb-4 text-sm">Update your password to enhance account security.</p>
-                <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium">
+                <button 
+                  onClick={() => setShowChangePasswordModal(true)} // Open the modal
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium"
+                >
                   Change password
                 </button>
               </div>
@@ -204,7 +300,10 @@ export default function ManageAccount({ close }) {
                 <p className="text-gray-600 mb-4 text-sm">
                   Permanently delete your account and all associated data. This action cannot be undone.
                 </p>
-                <button className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-md text-sm font-medium flex items-center gap-2">
+                <button 
+                  onClick={() => setShowDeleteDialog(true)} 
+                  className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-md text-sm font-medium flex items-center gap-2"
+                >
                   <Trash2 className="w-4 h-4" /> Delete account
                 </button>
               </div>
@@ -212,6 +311,21 @@ export default function ManageAccount({ close }) {
           )}
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <ChangePassword close={() => setShowChangePasswordModal(false)} />
+        </div>
+      )}
+
+      {/* Delete Dialog */}
+      {showDeleteDialog && (
+        <ConfirmDelete 
+          onConfirm={handleDeleteAccount} 
+          onClose={() => setShowDeleteDialog(false)} 
+        />
+      )}
     </div>
   )
 }

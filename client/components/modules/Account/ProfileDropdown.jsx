@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 export default function ProfileDropdown({setShowManageAccount}) {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.user)
-  const [isOpen, setIsOpen] = useState(false)// State to manage the visibility of the ManageAccount modal
+  const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
   const toggleDropdown = () => {
@@ -82,7 +82,7 @@ export default function ProfileDropdown({setShowManageAccount}) {
           </div>
 
           <div className="p-2 bg-gray-50 text-center text-sm text-gray-500 rounded-b-md">
-             <span className="font-semibold">El Boutique</span>
+            <span className="font-semibold">El Boutique</span>
           </div>
         </div>
       )}
