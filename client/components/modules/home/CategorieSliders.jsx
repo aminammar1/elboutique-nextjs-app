@@ -13,6 +13,7 @@ import Row from '@/components/custom/Row'
 import { useRouter } from 'next/navigation'
 import Heading from '@/components/custom/Heading'
 import { CATEGORY_SLIDES } from '@/constants/categoriedata'
+import Image from 'next/image'
 
 export default function Categories() {
   const animation = {
@@ -59,9 +60,15 @@ export default function Categories() {
           {CATEGORY_SLIDES.map((item, idx) => (
             <SwiperSlide key={idx} className="relative cursor-pointer group">
               <m.div
-                className="h-[600px] w-full bg-cover bg-top duration-300 ease-out hover:scale-95"
-                style={{ backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-              >
+                className="h-[600px] w-full bg-cover bg-top duration-300 ease-out hover:scale-95">
+                <Image
+                src={item.image}
+                alt={item.title}
+                layout="fill"
+                objectFit="cover"
+                quality={75}
+                loading="lazy"
+              />
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-md p-4 shadow-xl cursor-pointer transition-all duration-300 group-hover:bg-black">
                   <m.h6
                     initial={animation.hide}

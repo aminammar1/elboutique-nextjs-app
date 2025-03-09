@@ -50,24 +50,24 @@ async uploadAvatar(userId: string, file: Express.Multer.File) {
   /** Fetch User Details  */
 
     async fetchUserDetails(userId: string) {
-    try {
-        const user = await this.UserModel.findById(userId)
-        .select('-password') // Exclude password
-        .lean();
+        try {
+            const user = await this.UserModel.findById(userId)
+                .select('-password') // Exclude password
+                .lean();
 
-        if (!user) {
-        throw new NotFoundException('User not found');
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+
+            return {
+                message: 'User details fetched successfully',
+                success: true,
+                error: false,
+                data: user,
+            };
+        } catch (error) {
+            throw new Error(error.message || 'Failed to fetch user details');
         }
-        
-        return {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        avatar: user.avatar,
-        };
-    } catch (error) {
-        throw new Error(error.message || 'Failed to fetch user details');
-    }
     }
 
     /** Update User Details  */

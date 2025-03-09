@@ -26,8 +26,8 @@ export default function ProfileDropdown({setShowManageAccount}) {
   }
 
   const handleManageAccount = () => {
-    setShowManageAccount(true) // Use the passed state setter
-    setIsOpen(false) // Close the dropdown
+    setShowManageAccount(true) 
+    setIsOpen(false)
   }
 
   return (
@@ -56,7 +56,7 @@ export default function ProfileDropdown({setShowManageAccount}) {
               />
               <div>
                 <p className="font-medium text-gray-800">{user?.name || 'User'}</p>
-                <p className="text-sm text-gray-600">{user?.email || 'user@example.com'}</p>
+                <p className="text-sm text-gray-600">{user?.email || 'user@example.com'} ({user?.role || 'user' }) </p>
               </div>
             </div>
           </div>

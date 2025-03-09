@@ -8,11 +8,8 @@ export const fetchUserDetails = () => async (dispatch) => {
     const response = await axios.get(`${API_URL}/api/user/fetch-user-details`, {
       withCredentials: true,
     })
-
-    console.log('Fetched user details:', response.data) // Debugging
-
-    dispatch(setUserDetails(response.data)) // Update Redux
-    return { success: true, user: response.data }
+    dispatch(setUserDetails(response.data.data)) // Update Redux
+    return { success: true, user: response.data.data }
   } catch (error) {
     return {
       success: false,

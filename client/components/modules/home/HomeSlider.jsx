@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/custom/Button'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
+import Image from 'next/image'
 import { slidesData } from '@/constants/sliderData'
 
 export default function HomeSlider() {
