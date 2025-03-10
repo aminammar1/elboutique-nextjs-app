@@ -13,8 +13,6 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-
-    // 🔥 Check both cookies and Authorization header
     const token = request.cookies?.access_token || request.headers.authorization?.split(' ')[1];
 
     if (!token) {

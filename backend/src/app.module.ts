@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import config from './config/config';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
+import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UploadModule,
     UserModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,7 +6,6 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { Response as ExpressResponse } from 'express';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UploadService } from 'src/upload/upload.service';
@@ -76,7 +75,7 @@ async uploadAvatar(userId: string, file: Express.Multer.File) {
         const user = await this.UserModel.findByIdAndUpdate(userId, data, {new: true,});
 
         if (!user) {
-        throw  new NotFoundException('User not found');
+        throw new NotFoundException('User not found');
         }
 
         return {
