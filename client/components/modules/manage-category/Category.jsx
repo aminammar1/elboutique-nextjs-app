@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState , useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Cross2Icon, Pencil1Icon, TrashIcon } from '@radix-ui/react-icons'
@@ -10,6 +10,8 @@ import {
   updateCategory,
   deleteCategory,
 } from '@/actions/Categories'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/custom/table'
+import { Button } from '@/components/custom/Button'
 
 export default function Category() {
   const [categories, setCategories] = useState([]);
@@ -17,7 +19,6 @@ export default function Category() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { control, handleSubmit, reset, setValue } = useForm();
 
-  /** Fetch Categories */
   useEffect(() => {
     loadCategories()
   }, [])
@@ -92,51 +93,49 @@ export default function Category() {
                 />
               )}
             />
-            <button type="submit" className="w-full py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
+            <Button type="submit" className="w-full py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
               Add Category
-            </button>
+            </Button>
           </form>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <table className="w-full text-sm text-left">
-            <thead>
-              <tr className="border-b bg-gray-200">
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">Name</th>
-                <th className="px-4 py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {categories.length === 0 ? (
-                <tr>
-                  <td colSpan={3} className="px-4 py-3 text-center text-gray-500">
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center text-gray-500">
                     No categories added yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 categories.map((category, index) => (
-                  <tr key={category._id} className="border-b hover:bg-gray-100">
-                    <td className="px-4 py-2">{index + 1}</td> {/* Incremental ID */}
-                    <td className="px-4 py-2">{category.name}</td>
-                    <td className="px-4 py-2 flex gap-2">
+                  <TableRow key={category._id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{category.name}</TableCell>
+                    <TableCell className="flex gap-2">
                       <button onClick={() => handleUpdateDialog(category)} className="text-black hover:text-gray-600">
                         <Pencil1Icon className="w-5 h-5" />
                       </button>
                       <button onClick={() => handleDeleteCategory(category._id)} className="text-red-500 hover:text-red-700">
                         <TrashIcon className="w-5 h-5" />
                       </button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 
-      {/* Update Dialog */}
       <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />

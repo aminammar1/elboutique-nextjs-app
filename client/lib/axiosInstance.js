@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use(async (config) => {
   return config
 })
 
- /** Response interceptors*/
+  /** Response interceptors*/
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {

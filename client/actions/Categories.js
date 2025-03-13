@@ -30,7 +30,7 @@ export const updateCategory = async (categoryId, newName) => {
 }
 
 export const deleteCategory = async (categoryId) => {
- try {
+  try {
     const response = await axios.delete(`${API_URL}/api/categories/delete-category/${categoryId}`, { withCredentials: true })
     return response.data 
   } catch (error) {

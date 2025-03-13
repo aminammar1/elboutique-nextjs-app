@@ -9,6 +9,8 @@ import config from './config/config';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
 import { CategoriesModule } from './categories/categories.module';
+import { SubcategoriesModule } from './subcategories/subcategories.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,9 +37,9 @@ import { CategoriesModule } from './categories/categories.module';
     UploadModule,
     UserModule,
     CategoriesModule,
+    SubcategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {}

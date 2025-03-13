@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import colors from 'tailwindcss/colors'
+import colors, { black } from 'tailwindcss/colors'
 import tailwindcssAnimate from 'tailwindcss-animate'
 
 export default {
@@ -67,12 +67,12 @@ export default {
       paragraphe: colors.gray[600],
       label: colors.black,
       placeholder: colors.gray[400],
-      body: colors.slate[700],
+      body: black,
       table: colors.gray[900],
       background: colors.gray[100],
       border: colors.gray[200],
       'inputs-border': colors.gray[300],
-      icon: colors.gray[500],
+      icon: black,
     },
     fontWeight: {
       thin: '100',
