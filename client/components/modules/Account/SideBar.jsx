@@ -1,12 +1,10 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signout } from '@/actions/auth'
 import { cn } from '@/lib/utils'
-import {
-  LogOut,
-} from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { fetchUserDetails } from '@/actions/User'
@@ -25,19 +23,19 @@ export default function SidebarAccount() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      dispatch(fetchUserDetails());
+      dispatch(fetchUserDetails())
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated])
 
   const handleLogout = () => {
     dispatch(signout()).then((result) => {
       if (result.success) {
-        router.push('/');
+        router.push('/')
       } else {
-        console.error(result.message);
+        console.error(result.message)
       }
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -48,7 +46,10 @@ export default function SidebarAccount() {
         <ul className="mt-6 space-y-3">
           {menuItems.map((item, index) => (
             <li key={index}>
-              <Link href={item.href} className="flex items-center p-3 rounded-lg hover:bg-gray-200 transition">
+              <Link
+                href={item.href}
+                className="flex items-center p-3 rounded-lg hover:bg-gray-200 transition"
+              >
                 {item.icon}
                 <span className="ml-3 font-medium">{item.label}</span>
               </Link>
@@ -60,7 +61,10 @@ export default function SidebarAccount() {
               <hr className="my-4 border-gray-300" />
               {adminItems.map((item, index) => (
                 <li key={index}>
-                  <Link href={item.href} className="flex items-center p-3 rounded-lg hover:bg-gray-200 transition">
+                  <Link
+                    href={item.href}
+                    className="flex items-center p-3 rounded-lg hover:bg-gray-200 transition"
+                  >
                     {item.icon}
                     <span className="ml-3 font-medium">{item.label}</span>
                   </Link>
@@ -71,7 +75,10 @@ export default function SidebarAccount() {
 
           <hr className="my-4 border-gray-300" />
           <li>
-            <button onClick={handleLogout} className="w-full flex items-center p-3 rounded-lg hover:bg-gray-200 transition">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center p-3 rounded-lg hover:bg-gray-200 transition"
+            >
               <LogOut />
               <span className="ml-3 font-medium">Sign Out</span>
             </button>
