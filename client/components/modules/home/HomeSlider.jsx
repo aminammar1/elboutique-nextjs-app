@@ -12,7 +12,6 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/custom/Button'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
-import Image from 'next/image'
 import { slidesData } from '@/constants/sliderData'
 
 export default function HomeSlider() {
@@ -27,7 +26,7 @@ export default function HomeSlider() {
 
   return (
     <section>
-      <Container>
+      <Container className= "mx-auto justify-center ">
           <Swiper
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             spaceBetween={50}
@@ -50,12 +49,12 @@ export default function HomeSlider() {
                 }}
               >
                 {item.title !== '' ? (
-                  <div className="absolute drop-shadow-2xl grid grid-cols-1 place-content-start justify-items-center lg:justify-items-start gap-8 capitalize m-auto top-100 lg:top-30 lg:left-20 w-fit">
+                  <div className="absolute drop-shadow-2xl grid grid-cols-1 place-content-start justify-items-center lg:justify-items-start gap-8 capitalize m-auto top-100 lg:top-50 lg:left-20 w-fit">
                     <m.h4
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 0.4 }}
-                      className="max-w-60 text-2xl lg:text-h4 lg:max-w-screen-md capitalize"
+                      className="max-w-60 text-lg lg:text-h4 lg:max-w-screen-md capitalize"
                       style={{ color: item.textColor }}
                     >
                       {item.subtitle.substring(0, 65)}
@@ -64,7 +63,7 @@ export default function HomeSlider() {
                       initial={animation.hide}
                       whileInView={animation.show}
                       transition={{ delay: 0.6 }}
-                      className={cn('text-2xl lg:text-h1')}
+                      className={cn('text-2xl lg:text-5xl')}
                       style={{ color: item.textColor }}
                     >
                       {item.title}

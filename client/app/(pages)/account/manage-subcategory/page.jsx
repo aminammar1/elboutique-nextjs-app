@@ -13,7 +13,7 @@ import {
 export default function ManageSubcategory() {
     return (
         <>
-            <section className="my-10">
+            <section className="my-10 p-3">
                 <Container>
                     <Breadcrumb>
                         <BreadcrumbList className="capitalize flex flex-wrap">

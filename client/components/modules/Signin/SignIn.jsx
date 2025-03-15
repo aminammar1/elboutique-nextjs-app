@@ -111,7 +111,7 @@ export default function Signin() {
         </div>
 
         <div className="text-right">
-          <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+          <Link href="/forgot-password" className="text-sm text-gray-600 hover:underline">
             Forgot password?
           </Link>
         </div>
@@ -138,7 +138,7 @@ export default function Signin() {
         </div>
 
         <p className="text-center text-gray-500 mt-4">
-          Don't have an account? <Link href="/sign-up" className="text-blue-600 hover:underline">Sign up</Link>
+          Don't have an account? <Link href="/sign-up" className="text-gray-600 hover:underline">Sign up</Link>
         </p>
       </div>
   )

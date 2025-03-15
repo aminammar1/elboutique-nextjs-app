@@ -14,7 +14,7 @@ import Container from '@/components/custom/Container'
 export default function PaymentCard() {
   return (
     <section className="py-10 w-full">
-      <Container>
+      <Container className="mx-auto">
         <Swiper
           breakpoints={{
             // when window width is >= 340 px

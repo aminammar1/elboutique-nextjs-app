@@ -15,7 +15,7 @@ import {
 export default function UploadProductsPage() {
     return (
         <>
-        <section className="my-10">
+        <section className="my-10 p-2">
                 <Container>
                     <Breadcrumb>
                         <BreadcrumbList className="capitalize flex flex-wrap">

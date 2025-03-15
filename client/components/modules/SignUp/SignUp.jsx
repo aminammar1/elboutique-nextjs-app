@@ -23,11 +23,9 @@ export default function Signup() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(
-    {
-      resolver: yupResolver(signupSchema),
-    }
-  )
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+  })
 
   const onSubmit = async (data) => {
     setLoading(true)
@@ -41,9 +39,8 @@ export default function Signup() {
       })
       // Redirect after 2 seconds
       setTimeout(() => {
-        router.push('/sign-in');
+        router.push('/sign-in')
       }, 2000)
-
     } else {
       setToastData({
         status: 'error',
@@ -172,8 +169,8 @@ export default function Signup() {
 
       {/* Already have an account? */}
       <p className="text-center text-gray-500 mt-4">
-        Already have an account? {' '}
-        <Link href="/sign-in" className="text-blue-600 hover:underline">
+        Already have an account?{' '}
+        <Link href="/sign-in" className="text-gray-600 hover:underline">
           Sign in
         </Link>
       </p>

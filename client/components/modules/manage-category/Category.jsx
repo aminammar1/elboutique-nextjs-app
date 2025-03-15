@@ -102,7 +102,7 @@ export default function Category() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className>
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Actions</TableHead>

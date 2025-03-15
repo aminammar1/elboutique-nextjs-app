@@ -17,7 +17,7 @@ export function TableBody({ children }) {
 }
 
 export function TableRow({ children }) {
-    return <tr className="border-b hover:bg-gray-100">{children}</tr>
+    return <tr className=" hover:bg-gray-100 border-gray-50">{children}</tr>
 }
 
 export function TableHead({ children }) {

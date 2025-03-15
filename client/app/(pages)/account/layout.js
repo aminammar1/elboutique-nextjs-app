@@ -5,7 +5,7 @@ import Container from '@/components/custom/Container'
 export default function AccountLayout({ children }) {
   return (
     <section className="py-10 relative h-screen">
-      <Container className="overflow-x-auto ">
+      <Container className="overflow-x-auto mx-auto custom-scrollbar">
         <div className="flex relative">
           <SidebarAccount />
           <div className="flex-1">{children}</div>
