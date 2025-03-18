@@ -134,7 +134,7 @@ export default function ManageAccount({ close }) {
 
   return (
     <div className="flex h-full">
-      <div className="w-64 bg-gray-50 p-6 border-r">
+      <div className="w-64 bg-gray-50 p-6 border-r border-gray-300">
         <div className="flex flex-col h-full">
           <h2 className="text-xl font-semibold text-black">Account</h2>
           <p className="text-sm text-gray-600 mt-1">Manage your account info.</p>
@@ -168,7 +168,7 @@ export default function ManageAccount({ close }) {
 
       <div className="flex-1 overflow-y-auto">
         <div className="p-6">
-          <div className="flex justify-between items-center border-b pb-4">
+          <div className="flex justify-between items-center pb-4">
             <h2 className="text-xl font-semibold text-black">
               {activeTab === 'profile' ? 'Profile details' : 'Security settings'}
             </h2>
@@ -224,14 +224,14 @@ export default function ManageAccount({ close }) {
                 </div>
                 <button 
                   onClick={() => setEditName(true)} 
-                  className="text-blue-600 hover:underline text-sm"
+                  className="text-gray-600 hover:underline text-sm"
                 >
                   Update profile
                 </button>
               </div>
 
               {/* Email Section */}
-              <div className="border-t border-b py-4">
+              <div className="border-t border-b border-gray-300 py-4">
                 <p className="text-sm text-gray-600 mb-3">Email Address</p>
                 <div className="flex items-center justify-between">
                   {editEmail ? (
@@ -254,7 +254,7 @@ export default function ManageAccount({ close }) {
                   )}
                   <button 
                     onClick={() => setEditEmail(true)} 
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-gray-600 hover:underline text-sm"
                   >
                     Edit
                   </button>
@@ -275,7 +275,7 @@ export default function ManageAccount({ close }) {
                   </span>
                   </div>
                 </div>
-                <button className="mt-3 text-blue-600 flex items-center gap-2 hover:underline text-sm">
+                <button className="mt-3 text-gray-600 flex items-center gap-2 hover:underline text-sm">
                   <Link className="w-4 h-4" /> Connect account
                 </button>
               </div>
@@ -284,8 +284,8 @@ export default function ManageAccount({ close }) {
            {/* Security content */}
             {activeTab === 'security' && (
             <div className="py-4 space-y-6">
-              <div className="bg-white p-4 rounded-md border">
-                <h3 className="font-medium mb-2 text-black">Password</h3>
+              <div className="bg-white p-4 rounded-md border border-gray-300">
+                <h4 className="font-bold mb-2 text-black">Password</h4>
                 <p className="text-gray-600 mb-4 text-sm">Update your password to enhance account security.</p>
                 <button 
                   onClick={() => setShowChangePasswordModal(true)} // Open the modal
@@ -295,8 +295,8 @@ export default function ManageAccount({ close }) {
                 </button>
               </div>
               
-              <div className="bg-white p-4 rounded-md border">
-                <h3 className="font-medium mb-2 text-red-600">Delete Account</h3>
+              <div className="bg-white p-4 rounded-md border border-gray-300">
+                <h4 className="font-bold mb-2 text-red-600">Delete Account</h4>
                 <p className="text-gray-600 mb-4 text-sm">
                   Permanently delete your account and all associated data. This action cannot be undone.
                 </p>

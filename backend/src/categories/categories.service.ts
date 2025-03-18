@@ -1,14 +1,17 @@
-import { Injectable , NotFoundException } from '@nestjs/common';
+import { Injectable , NotFoundException , HttpException, HttpStatus} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Category } from './schemas/category.schema';
+import { SubCategory } from 'src/subcategories/schemas/subcategories.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCategoryDto } from './dto/category.dto';
 
 @Injectable()
 export class CategoriesService {
     constructor(
-        @InjectModel(Category.name)
+        @InjectModel(Category.name )
         private readonly categoryModel: Model<Category>,
+        @InjectModel(SubCategory.name)
+        private readonly subcategoryModel: Model<SubCategory>,
     ) {}
 
     /** Create Category  */
@@ -70,17 +73,40 @@ export class CategoriesService {
 
     async deleteCategory(categoryId: string) {
         try {
-            const category = await this.categoryModel.findByIdAndDelete(categoryId);
-            if (!category) {
+            const subcategory = await this.subcategoryModel.find({ category: categoryId });
+            if (subcategory.length > 0) {
+                throw new HttpException(
+                    {
+                        message: 'Category has subcategories',
+                        success: false,
+                        error: true,
+                    },
+                    HttpStatus.BAD_REQUEST, // 400 status
+                );
+            }
+    
+            const deleteCategory = await this.categoryModel.findByIdAndDelete(categoryId);
+            if (!deleteCategory) {
                 throw new NotFoundException('Category not found');
             }
+    
             return {
                 message: 'Category deleted successfully',
                 success: true,
                 error: false,
             };
         } catch (error) {
-            throw new Error(error.message || 'Internal Server Error');
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException(
+                {
+                    message: error.message || 'Internal Server Error',
+                    success: false,
+                    error: true,
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR, // 500 status
+            );
         }
     }
-}
+}    

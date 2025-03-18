@@ -80,7 +80,7 @@ export default function ChangePassword({ close }) {
       <button
         onClick={handleChangePassword}
         disabled={loading}
-        className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400 bg-black"
+        className="mt-4 w-full bg-black text-white py-2 rounded-md hover:bg-gray-900"
       >
         {loading ? 'Changing...' : 'Confirm Change'}
       </button>

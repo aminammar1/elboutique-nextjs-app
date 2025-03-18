@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
 
-@variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* Container configuration */
@@ -47,6 +47,7 @@
   /* Base colors */
   --color-white: #ffffff;
   --color-black: #1f1f1f;
+  --color-gray-50: #oklch(0.707 0.022 261.325);
   --color-heading: #1f1f1f;
   --color-paragraphe: #4b5563;
   --color-label: #1f1f1f;
@@ -158,7 +159,7 @@
     @apply text-h3;
   }
   h4 {
-    @apply text-h4;
+    @reference text-h4;
   }
   h5 {
     @apply text-h5;
@@ -193,6 +194,7 @@ input[type='range']::-webkit-slider-runnable-track {
   border-radius: 1.3px;
   border: 0.2px solid #010101;
 }
+
 input[type='range']::-webkit-slider-thumb {
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   border: 1px solid #000000;
@@ -263,22 +265,22 @@ input[type='range']:focus::-ms-fill-upper {
 }
 
 /* Scrollbar style */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px; /* Customize the scrollbar width */
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent; /* Customize the scrollbar track */
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-black rounded-md;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-500;
-  }
-  
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Customize the scrollbar width */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Customize the scrollbar track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-black rounded-md;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-black;
+}
+
 /* Rating style */
 /* gap between stars */
 .MuiRating-root span {
