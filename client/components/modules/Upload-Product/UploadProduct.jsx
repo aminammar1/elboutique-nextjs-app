@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import { FaImage, FaUpload, FaTrash } from 'react-icons/fa'
 import { Button } from '@/components/custom/Button'
 import { getAllSubcategories } from '@/actions/Subcategories'
 import { getCategories } from '@/actions/Categories'
 import { uploadImage, createProduct } from '@/actions/product'
+import Toast from '@/components/custom/Toast'
+import { ClipLoader } from 'react-spinners'
 
 export default function UploadProduct() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
@@ -14,6 +16,8 @@ export default function UploadProduct() {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubcategories] = useState([])
   const [selectedFiles, setSelectedFiles] = useState([])
+  const [toastData, setToastData] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
@@ -37,10 +41,9 @@ export default function UploadProduct() {
   }
 
   const onSubmit = async (data) => {
-    if (selectedFiles.length === 0) return alert('Please select at least one image')
-
+    
     setIsUploading(true)
-
+    setLoading(true)
     try {
       const uploadedImages = await Promise.all(
         selectedFiles.map(async (file) => {
@@ -48,10 +51,6 @@ export default function UploadProduct() {
           return result.imageUrl
         })
       )
-
-      if (!uploadedImages.length) throw new Error('Image upload failed')
-
-        console.log('Uploaded images:', uploadedImages)
       
         const productData = { 
         ...data, 
@@ -59,25 +58,37 @@ export default function UploadProduct() {
         discount: data.discount ? Number(data.discount) : 0,
         stylesColors: data.stylesColors || ''
       }
-
-      console.log('Sending product data:', productData)
-      
       await createProduct(productData)
 
-      alert('Product uploaded successfully!')
+      setToastData({
+        status: 'success',
+        message: 'Product uploaded successfully!',
+      })
       reset()
       setPreviewImages([])
       setSelectedFiles([])
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
     } catch (error) {
-      alert(error.message || 'Upload failed')
+      setToastData({
+        status: 'error',
+        message: 'Failed to upload product',
+      })
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
     } finally {
       setIsUploading(false)
+      setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen p-6">
-      <div className="max-w-6xl mx-auto bg-white p-4 rounded-xl shadow-lg">
+      <div className="max-w-5xl mx-0.5 bg-white p-2 rounded-xl shadow-lg">
+
+        {toastData && <Toast status={toastData.status} message={toastData.message} />}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-black mb-2">Product Images</label>
@@ -164,7 +175,12 @@ export default function UploadProduct() {
 
           <div className="pt-4 bg-white">
             <Button type="submit" className="w-full p-3 rounded-md bg-black hover:bg-gray-800 text-white font-medium flex items-center justify-center transition" >
-              <FaUpload className="mr-2" /> Upload Product 
+              {isUploading ? <ClipLoader color="#fff" size={20} /> : (
+                <>
+                  <FaUpload size={20} className="mr-2" /> 
+                  Upload Product
+                </>
+              )}
             </Button>
           </div>
         </form>

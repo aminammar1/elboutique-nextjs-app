@@ -21,17 +21,23 @@ import {
   TableHead,
   TableCell,
 } from '@/components/custom/table'
+import Toast from '@/components/custom/Toast'
+import { ClipLoader } from 'react-spinners'
 
 export default function Subcategories() {
   const [subcategories, setSubcategories] = useState([])
   const [categories, setCategories] = useState([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedSubcategory, setSelectedSubcategory] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [toastData, setToastData] = useState(null)
   const { control, handleSubmit, reset, setValue } = useForm()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
 
   useEffect(() => {
     loadSubcategories()
-    loadCategories() // We need to load categories separately
+    loadCategories()
   }, [])
 
   const loadSubcategories = async () => {
@@ -53,8 +59,8 @@ export default function Subcategories() {
   }
 
   const handleAddSubcategory = async (data) => {
-    if (!data.subcategoryName?.trim() || !data.category?.trim()) return
     try {
+      setLoading(true)
       const response = await createSubcategory({
         name: data.subcategoryName,
         category: data.category,
@@ -62,9 +68,24 @@ export default function Subcategories() {
       if (response.success) {
         reset({ subcategoryName: '', category: '' })
         loadSubcategories()
+        setToastData({
+          status: 'success',
+          message: 'Subcategory added successfully!',
+        })
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
       }
     } catch (error) {
-      console.error('Error adding subcategory:', error.message)
+      setToastData({
+        status: 'error',
+        message: 'Failed to add subcategory',
+      })
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -73,11 +94,22 @@ export default function Subcategories() {
       const response = await deleteSubcategory(id)
       if (response.success) {
         loadSubcategories()
-      } else {
-        console.error('Delete operation returned non-success response:', response)
+        setToastData({
+          status: 'success',
+          message: 'Subcategory deleted successfully!',
+        })
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
       }
     } catch (error) {
-      console.error('Error deleting subcategory:', error.message)
+      setToastData({
+        status: 'error',
+        message: 'Failed to delete subcategory',
+      })
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
     }
   }
 
@@ -97,18 +129,41 @@ export default function Subcategories() {
       if (response.success) {
         setIsDialogOpen(false)
         loadSubcategories()
+        setToastData({
+          status: 'success',
+          message: 'Subcategory updated successfully!',
+        })
+        setTimeout(() => {
+          setToastData(null)
+        }, 3000)
       }
     } catch (error) {
-      console.error('Error updating subcategory:', error.message)
+      setToastData({
+        status: 'error',
+        message: 'Failed to update subcategory',
+      })
+      setTimeout(() => {
+        setToastData(null)
+      }, 3000)
     }
   }
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setCurrentPage(1)
+  }
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentRows = subcategories.slice(indexOfFirstRow, indexOfLastRow)
 
   return (
     <div className="min-h-screen bg-white-100 p-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-
-          {/*  Subcategory Form */}
+          {toastData && <Toast status={toastData.status} message={toastData.message} />}
           <form onSubmit={handleSubmit(handleAddSubcategory)} className="space-y-4">
             <Controller
               name="subcategoryName"
@@ -133,12 +188,14 @@ export default function Subcategories() {
                 </select>
               )}
             />
-            <Button type="submit" className="w-full py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">Add Subcategory</Button>
+            <Button type="submit" className="w-full py-3 bg-black text-white rounded-md hover:bg-gray-800 transition"
+              disabled={loading}
+            >
+              {loading ? <ClipLoader color="#fff" size={20} /> : ' Add Subcategory '}
+            </Button>
           </form>
         </div>
 
-
-        {/* Subcategories Table */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <Table>
             <TableHeader>
@@ -150,30 +207,30 @@ export default function Subcategories() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {subcategories.length === 0 ? (
+              {currentRows.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-gray-500">No subcategories added yet.</TableCell>
                 </TableRow>
               ) : (
-                subcategories.map((subcategory, index) => (
+                currentRows.map((subcategory, index) => (
                   <TableRow key={subcategory._id}>
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{indexOfFirstRow + index + 1}</TableCell>
                     <TableCell>{subcategory.name}</TableCell>
                     <TableCell>
                       {subcategory.category && subcategory.category.length > 0
-                        ? subcategory.category[0].name 
+                        ? subcategory.category[0].name
                         : 'N/A'}
                     </TableCell>
                     <TableCell className="flex gap-2">
-                      <button 
-                        onClick={() => handleUpdateDialog(subcategory)} 
+                      <button
+                        onClick={() => handleUpdateDialog(subcategory)}
                         className="text-black hover:text-gray-600"
                         type="button"
                       >
                         <Pencil1Icon className="w-5 h-5" />
                       </button>
-                      <button 
-                        onClick={() => handleDeleteSubcategory(subcategory._id)} 
+                      <button
+                        onClick={() => handleDeleteSubcategory(subcategory._id)}
                         className="text-red-500 hover:text-red-700"
                         type="button"
                       >
@@ -185,12 +242,44 @@ export default function Subcategories() {
               )}
             </TableBody>
           </Table>
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              <label>
+                Rows per page:
+                <select
+                  value={rowsPerPage}
+                  onChange={handleRowsPerPageChange}
+                  className="ml-2 p-1 border rounded"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="mx-4">
+                Page {currentPage} of {Math.ceil(subcategories.length / rowsPerPage)}
+              </span>
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === Math.ceil(subcategories.length / rowsPerPage)}
+                className="px-4 py-2 bg-gray-200 rounded-md disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-
-
-      {/* Dialog */}
       <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
