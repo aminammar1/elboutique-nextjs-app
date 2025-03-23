@@ -11,7 +11,7 @@ export default function Main() {
 
   return (
   <section className="h-full">
-    <Container className="mx-auto">
+    <Container>
       <Row className="justify-between">
         <Logo />
         <MainMenu />

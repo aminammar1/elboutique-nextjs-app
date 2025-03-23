@@ -19,7 +19,6 @@ axiosInstance.interceptors.request.use(async (config) => {
   return config
 })
 
-  /** Response interceptors*/
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -28,14 +27,19 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
-      const newToken = await refreshAccessToken()
+      try {
+        const newToken = await refreshAccessToken()
 
-      if (newToken) {
-        Cookies.set('access_token', newToken)
-        axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
-        return axiosInstance(originalRequest)
-      } else {
+        if (newToken) {
+          Cookies.set('access_token', newToken)
+          originalRequest.headers['Authorization'] = `Bearer ${newToken}`
+          return axiosInstance(originalRequest)
+        } else {
+          signout()
+        }
+      } catch (refreshError) {
         signout()
+        return Promise.reject(refreshError)
       }
     }
 

@@ -107,28 +107,23 @@ export class AuthService {
 
   async refreshTokens(refreshToken: string, res: ExpressResponse) {
     try {
-      const payload = this.jwtService.verify(refreshToken);
-
-      const tokens = this.generateTokens(payload.userId);
-
+      const payload = this.jwtService.verify(refreshToken)
+      const tokens = this.generateTokens(payload.userId)
+  
       res.cookie('access_token', tokens.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 60 * 60 * 1000, // 1 hour
-      });
-
-      return res
-        .status(200)
-        .json({
-          message: 'Tokens refreshed successfully',
-          success: true,
-          tokens,
-        });
+      })
+  
+      return res.status(200).json({
+        message: 'Tokens refreshed successfully',
+        success: true,
+        tokens,
+      })
     } catch (error) {
-      return res
-        .status(401)
-        .json({ message: 'Invalid refresh token', success: false });
+      return res.status(401).json({ message: 'Invalid refresh token', success: false })
     }
   }
 

@@ -26,7 +26,7 @@ export default function HomeSlider() {
 
   return (
     <section>
-      <Container className= "mx-auto justify-center ">
+      <Container>
           <Swiper
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             spaceBetween={50}

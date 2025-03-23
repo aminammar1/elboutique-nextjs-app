@@ -45,7 +45,7 @@ export default function Subcategories() {
       const data = await getAllSubcategories()
       setSubcategories(data)
     } catch (error) {
-      console.error('Error loading subcategories:', error.message)
+      console.log('Error loading subcategories:')
     }
   }
 
@@ -54,7 +54,7 @@ export default function Subcategories() {
       const data = await getCategories()
       setCategories(data)
     } catch (error) {
-      console.error('Error loading categories:', error.message)
+      console.log('Error loading categories')
     }
   }
 

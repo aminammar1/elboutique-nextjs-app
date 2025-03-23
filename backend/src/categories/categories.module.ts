@@ -8,6 +8,7 @@ import {
   SubCategorySchema,
 } from 'src/subcategories/schemas/subcategories.schema';
 import { User, UserSchema } from 'src/user/schemas/user.schema';
+import { Product, ProductSchema } from 'src/products/schemas/product.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -22,6 +23,10 @@ import { User, UserSchema } from 'src/user/schemas/user.schema';
       {
         name: SubCategory.name,
         schema: SubCategorySchema,
+      },
+      {
+        name: Product.name,
+        schema: ProductSchema,
       },
     ]),
   ],

@@ -17,7 +17,7 @@ export default function DashboardPat() {
   return (
     <>
       <section className="my-10 p-3">
-        <Container className="mx-auto">
+        <Container>
           <Breadcrumb>
             <BreadcrumbList className="capitalize flex flex-wrap">
               <Link href="/" className="text-xl hover:text-black">

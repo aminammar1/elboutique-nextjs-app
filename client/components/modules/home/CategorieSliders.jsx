@@ -38,7 +38,7 @@ export default function Categories() {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="mt-10"
     >
-      <Container className="mx-auto">
+      <Container>
         <Row className="mb-10">
           <Heading name="shop by top categories" />
         </Row>

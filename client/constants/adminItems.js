@@ -22,5 +22,5 @@ export const adminItems = [
     icon: <Shirt />,
     label: 'Upload Products',
     },
-    { href: '/account/products', icon: <Store />, label: 'Products' },
+    { href: '/account/admin-products', icon: <Store />, label: 'Products' },
 ]

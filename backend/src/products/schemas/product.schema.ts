@@ -32,6 +32,9 @@ export class Product extends Document {
 
     @Prop({ type: String, default: '' })
     stylesColors: string;
+
+    @Prop({ type: Number, default: null })
+    rating: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

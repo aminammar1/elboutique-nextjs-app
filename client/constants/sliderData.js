@@ -7,7 +7,7 @@ export const slidesData = [
     subtitle: 'Best deals available',
     description: 'Shop for the best deals on our online store.',
     textColor: '#fff',
-    link: 'shop',
+    link: 'products',
     btn: 'Shop Now',
   },
   {
@@ -17,7 +17,7 @@ export const slidesData = [
     subtitle: 'Trendy outfits',
     description: 'Shop for the latest trendy outfits on our online store.',
     textColor: '#fff',
-    link: 'new-arrivals',
+    link: 'products',
     btn: 'Explore',
   },
 ]

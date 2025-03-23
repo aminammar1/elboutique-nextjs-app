@@ -2,6 +2,7 @@ import { Injectable , NotFoundException , HttpException, HttpStatus} from '@nest
 import { Model } from 'mongoose';
 import { Category } from './schemas/category.schema';
 import { SubCategory } from 'src/subcategories/schemas/subcategories.schema';
+import { Product } from 'src/products/schemas/product.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateCategoryDto } from './dto/category.dto';
 
@@ -12,6 +13,8 @@ export class CategoriesService {
         private readonly categoryModel: Model<Category>,
         @InjectModel(SubCategory.name)
         private readonly subcategoryModel: Model<SubCategory>,
+        @InjectModel(Product.name)
+        private readonly productModel: Model<Product>,
     ) {}
 
     /** Create Category  */
@@ -74,10 +77,11 @@ export class CategoriesService {
     async deleteCategory(categoryId: string) {
         try {
             const subcategory = await this.subcategoryModel.find({ category: categoryId });
-            if (subcategory.length > 0) {
+            const product = await this.productModel.find({ category: categoryId });
+            if (subcategory.length > 0  || product.length > 0) {
                 throw new HttpException(
                     {
-                        message: 'Category has subcategories',
+                        message: 'Category has subcategories or products. Please delete them first',
                         success: false,
                         error: true,
                     },

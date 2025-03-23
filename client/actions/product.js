@@ -26,11 +26,41 @@ export const createProduct = async (productData) => {
   try {
     const { data } = await axios.post(
       `${API_URL}/api/products/create-product`,
-      productData ,
+      productData,
       { withCredentials: true }
     )
     return data
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Product creation failed')
+  }
+}
+
+// Fetch all products
+export const fetchProducts = async () => {
+  const { data } = await axios.get(`${API_URL}/api/products/all`)
+  return data
+}
+
+// Delete a product
+export const deleteProduct = async (id) => {
+  try {
+  const { data } = await axios.delete(`${API_URL}/api/products/delete/${id}`, { withCredentials: true })
+  return data
+  }
+  catch (error) {
+    throw new Error(error.response?.data?.message || 'Product deletion failed')
+  }
+}
+
+// Update a product
+export const updateProduct = async (id, updatedData) => {
+  try {
+  const { data } = await axios.put(`${API_URL}/api/products/update/${id}`, updatedData , 
+    { withCredentials: true }
+  )
+  return data 
+}
+  catch (error) {
+    throw new Error(error.response?.data?.message || 'Product update failed')
   }
 }
