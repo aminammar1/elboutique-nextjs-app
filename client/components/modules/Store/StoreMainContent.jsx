@@ -68,7 +68,7 @@ export default function StoreMainContent({
                         <Pagination
                             count={count}
                             page={page}
-                            color="primary"
+                            color="black"
                             variant="outlined"
                             shape="rounded"
                             onChange={handleChange}

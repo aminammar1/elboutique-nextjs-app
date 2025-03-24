@@ -75,7 +75,7 @@ export default function StoreProdCard({ product }) {
                         <div className="flex flex-wrap gap-4">
                             <CurrencyFormat
                                 value={bestPriceWithDiscount}
-                                className="font-bold text-primary-900 text-left w-20 text-3xl"
+                                className="font-bold text-black text-left w-20 text-3xl"
                             />
                             <CurrencyFormat
                                 value={bestPriceWithoutDiscount}
@@ -86,7 +86,7 @@ export default function StoreProdCard({ product }) {
                         <div className="flex flex-wrap gap-4">
                             <CurrencyFormat
                                 value={bestPriceWithoutDiscount}
-                                className="font-bold text-primary-900"
+                                className="font-bold text-black"
                             />
                             <CurrencyFormat
                                 value={bestPriceWithoutDiscount}
