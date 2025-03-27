@@ -28,7 +28,7 @@ export default function StoreProdCard({ product }) {
                 className="flex group/image h-[400px] relative overflow-hidden"
             >
                     <Image
-                    src={product?.image?.[0] || "/default-image.webp"}
+                    src={product?.image?.[0] || "/assets/images/placeholder.jpg"}
                     alt={product?.productName || "Product image"}
                     width="300"
                     height="400"

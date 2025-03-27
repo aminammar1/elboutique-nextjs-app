@@ -85,9 +85,8 @@ export default function UploadProduct() {
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-5xl mx-0.5 bg-white p-2 rounded-xl shadow-lg">
-
+    <div className="w-full min-h-screen p-6 bg-gray-50">
+      <div className="max-w-4xl mx-0.5 bg-white p-6 rounded-lg shadow-md">
         {toastData && <Toast status={toastData.status} message={toastData.message} />}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
@@ -103,7 +102,7 @@ export default function UploadProduct() {
             </div>
 
             {previewImages.length > 0 && (
-              <div className="mt-4 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 ">
+              <div className="mt-4 grid grid-cols-3 md:grid-cols-5 gap-3">
                 {previewImages.map((preview, index) => (
                   <div key={index} className="relative group">
                     <img src={preview.url} alt="Preview" className="h-24 w-24 object-cover rounded-md border" />
@@ -116,20 +115,23 @@ export default function UploadProduct() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-black mb-1">Product Name</label>
               <input type="text" {...register('productName', { required: true })} className="w-full p-3 rounded-md border focus:ring-2 focus:ring-black outline-none transition" />
+              {errors.productName && <p className="text-red-500 text-xs mt-1">Product name is required</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">Product Description</label>
               <input type="text" {...register('productDescription', { required: true })} className="w-full p-3 rounded-md border focus:ring-2 focus:ring-black outline-none transition" />
+              {errors.productDescription && <p className="text-red-500 text-xs mt-1">Product description is required</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">Price ($)</label>
               <input type="number" {...register('price', { required: true })} className="w-full p-3 rounded-md border focus:ring-2 focus:ring-black outline-none transition" />
+              {errors.price && <p className="text-red-500 text-xs mt-1">Price is required</p>}
             </div>
 
             <div>
@@ -140,6 +142,7 @@ export default function UploadProduct() {
             <div>
               <label className="block text-sm font-medium text-black mb-1">Stock Count</label>
               <input type="number" {...register('stockCount', { required: true })} className="w-full p-3 rounded-md border focus:ring-2 focus:ring-black outline-none transition" />
+              {errors.stockCount && <p className="text-red-500 text-xs mt-1">Stock count is required</p>}
             </div>
 
             <div>
@@ -155,6 +158,7 @@ export default function UploadProduct() {
                   <option key={index} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
+              {errors.category && <p className="text-red-500 text-xs mt-1">Category is required</p>}
             </div>
 
             <div>
@@ -165,6 +169,7 @@ export default function UploadProduct() {
                   <option key={idx} value={sub.id}>{sub.name}</option>
                 ))}
               </select>
+              {errors.subCategory && <p className="text-red-500 text-xs mt-1">Subcategory is required</p>}
             </div>
           </div>
 
@@ -173,8 +178,8 @@ export default function UploadProduct() {
             <textarea {...register('additionalInfo')} className="w-full p-3 rounded-md border focus:ring-2 focus:ring-black outline-none transition" rows={4}></textarea>
           </div>
 
-          <div className="pt-4 bg-white">
-            <Button type="submit" className="w-full p-3 rounded-md bg-black hover:bg-gray-800 text-white font-medium flex items-center justify-center transition" >
+          <div className="pt-4">
+            <Button type="submit" className="w-full p-3 rounded-md bg-black hover:bg-gray-800 text-white font-medium flex items-center justify-center transition" disabled={isUploading}>
               {isUploading ? <ClipLoader color="#fff" size={20} /> : (
                 <>
                   <FaUpload size={20} className="mr-2" /> 

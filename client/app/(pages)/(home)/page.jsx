@@ -2,8 +2,10 @@ import * as React from 'react'
 import HomeSlider from '@/components/modules/home/HomeSlider'
 import PaymentCard from '@/components/modules/home/PaymentCard'
 import Categories from '@/components/modules/home/CategorieSliders'
-import Container from '@/components/custom/Container'
-import Row from '@/components/custom/Row'
+import BestSale from '@/components/modules/home/BestSale'
+import BannerSale from '@/components/modules/home/BannerSale'
+import DealOfMouth from '@/components/modules/home/DealOfMouth'
+
 
 export default function Home() {
   return (
@@ -11,10 +13,9 @@ export default function Home() {
       <HomeSlider />
       <PaymentCard />
       <Categories />
-      <Container>
-      <Row className="mb-10">
-        </Row>
-      </Container>
+      <BestSale />
+      <BannerSale />
+      <DealOfMouth />
     </>
   )
 }
