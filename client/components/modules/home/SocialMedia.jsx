@@ -7,8 +7,6 @@ import Link from 'next/link'
 import { FaInstagram } from 'react-icons/fa'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
-
-// Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/pagination'
 
