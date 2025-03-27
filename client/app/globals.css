@@ -312,3 +312,7 @@ input[type='range']:focus::-ms-fill-upper {
 .MuiRating-root span {
   font-size: 30px;
 }
+::selection {
+  background: var(--color-black);
+  color: var(--color-white);
+}
