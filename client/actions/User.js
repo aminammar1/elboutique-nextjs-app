@@ -20,12 +20,16 @@ export const fetchUserDetails = () => async (dispatch) => {
 
 export const updateProfile = (data) => async (dispatch) => {
   try {
-    const response = await axios.put(`${API_URL}/api/user/update-profile`, data, {
-      withCredentials: true,
-    })
+    const response = await axios.put(
+      `${API_URL}/api/user/update-profile`,
+      data,
+      {
+        withCredentials: true,
+      }
+    )
     dispatch(setUserDetails(response.data)) // Update Redux
-    return { success: true, message: response.data.message } 
-  } catch(error){
+    return { success: true, message: response.data.message }
+  } catch (error) {
     return {
       success: false,
       message: error.response?.data?.message || 'Failed to update profile',
@@ -40,23 +44,45 @@ export const changePassword = async (oldPassword, newPassword) => {
       `${API_URL}/api/user/change-password`,
       { oldPassword, newPassword },
       { withCredentials: true }
-    );
+    )
 
-    return { success: true, message: response.data.message };
+    return { success: true, message: response.data.message }
   } catch (error) {
-    return { success: false, message: error.response?.data?.message || 'Failed to change password' };
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to change password',
+    }
   }
-};
-
+}
 
 // Delete User
 export const deleteUser = async () => {
   try {
-    const response = await axios.delete(`${API_URL}/api/user/delete`, { withCredentials: true });
+    const response = await axios.delete(`${API_URL}/api/user/delete`, {
+      withCredentials: true,
+    })
 
-    return { success: true, message: response.data.message };
+    return { success: true, message: response.data.message }
   } catch (error) {
-    return { success: false, message: error.response?.data?.message || 'Failed to delete user' };
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to delete user',
+    }
   }
-};
+}
 
+export const subscribeToNewsletter = async (email) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/user/subscribe-newsletter`,
+      { email }
+    )
+
+    return { success: true, message: response.data.message }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to subscribe',
+    }
+  }
+}

@@ -8,21 +8,54 @@ import { Loader2Icon, Mail, MapPin, MoveRight, PhoneCall } from 'lucide-react'
 import {
   FaFacebook,
   FaInstagram,
-  FaTwitter,
+  FaXTwitter,
   FaCcVisa,
   FaCcMastercard,
   FaPaypal,
-} from 'react-icons/fa'
+} from 'react-icons/fa6'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { m } from 'framer-motion'
 import Loading from '@/components/custom/Loading'
-import { cn } from '@/lib/utils'
 import { useSelector } from 'react-redux'
+import { subscribeToNewsletter } from '@/actions/User'
+import * as yup from 'yup'
 
 export default function Footer() {
   const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+
+  // YUP email validation schema
+  const emailSchema = yup.object().shape({
+    email: yup.string().email('Invalid email').required('Email is required'),
+  })
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+
+    try {
+      await emailSchema.validate({ email })
+      setSubmitting(true)
+      const response = await subscribeToNewsletter(email)
+      
+      if (response.success) {
+        setSuccess('Subscribed successfully!')
+        setEmail('')
+      } else {
+        setError(response.message || 'Failed to subscribe')
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <>
@@ -61,9 +94,9 @@ export default function Footer() {
                 <li className="flex gap-4">
                   <Link
                     className="flex gap-4 hover:text-gray-600"
-                    href="/account/dashboard"
+                    href={isAuthenticated ? "/account/dashboard" : "/sign-in"}
                   >
-                    My account
+                    My Account
                   </Link>
                 </li>
                 <li className="flex gap-4">
@@ -125,23 +158,41 @@ export default function Footer() {
                   </h6>
                 </li>
                 <li className="flex gap-4">
-                  <form className="flex w-full bg-gray-800 border border-white rounded-xl gap-4 items-center p-3">
+                  <form onSubmit={handleSubscribe} className="flex w-full bg-black border border-white rounded-xl gap-4 items-center p-3">
                     <Mail size="40" />
                     <Input
                       className="rounded-xl py-4 bg-transparent text-white text-xl"
                       placeholder="Enter your email here"
                       max="40"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      sx={{
+                        '& .MuiInputBase-input': {
+                          color: 'white',
+                        },
+                        '& .MuiInput-input::placeholder': {
+                          color: 'white',
+                          opacity: 0.7
+                        },
+                        '&::placeholder': {
+                          color: 'white',
+                          opacity: 0.7
+                        }
+                      }}
                     />
                     <Button
                       type="submit"
                       variant="outline"
                       size="icon"
                       className="bg-white text-black hover:bg-gray-400"
+                      disabled={submitting}
                     >
-                      <MoveRight />
+                      {submitting ? <Loader2Icon className="h-4 w-4 animate-spin" /> : <MoveRight />}
                     </Button>
                   </form>
                 </li>
+                {error && <li className="text-red-500 text-sm">{error}</li>}
+                {success && <li className="text-green-500 text-sm">{success}</li>}
               </ul>
             </div>
 
@@ -153,19 +204,13 @@ export default function Footer() {
                 <FaCcMastercard />
                 <FaPaypal />
               </div>
-              <div className="inline-flex gap-4 items-center text-slate-300 text-sm">
+              <div className="inline-flex gap-4 items-center text-slate-200 text-md">
                 @2025 El Boutique All rights reserved
               </div>
-              <div className="inline-flex gap-4">
-                <Button variant="outline" size="icon">
-                  <FaFacebook />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <FaInstagram />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <FaTwitter />
-                </Button>
+              <div className="inline-flex gap-6 text-white text-2xl">
+                <FaFacebook className="cursor-pointer hover:text-gray-400" />
+                <FaInstagram className="cursor-pointer hover:text-gray-400" />
+                <FaXTwitter className="cursor-pointer hover:text-gray-400" />
               </div>
             </div>
           </div>

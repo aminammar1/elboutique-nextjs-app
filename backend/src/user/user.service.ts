@@ -9,6 +9,7 @@ import {
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UploadService } from 'src/upload/upload.service';
+import { MailService } from 'src/services/mail.service';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 
@@ -18,6 +19,7 @@ export class UserService {
     @InjectModel(User.name)
     private UserModel: Model<User>,
     private uploadService: UploadService,
+    private mailService: MailService,
     ) {}
 
   /** Upload User Image  */
@@ -132,6 +134,20 @@ async uploadAvatar(userId: string, file: Express.Multer.File) {
     } catch (error) {
         throw new Error(error.message || 'Failed to delete user');
     }
+    }
+
+    async subscribeToNewsletter(email: string) {
+        try {
+          // Send confirmation email
+            await this.mailService.sendNewsletterEmail(email);
+            return {
+            message: 'Subscribed to newsletter successfully',
+            success: true,
+            error: false,
+            };
+        } catch (error) {
+            throw new Error(error.message || 'Failed to subscribe to newsletter');
+        }
     }
 }
 

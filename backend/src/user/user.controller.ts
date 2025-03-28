@@ -16,6 +16,7 @@ import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/guards/auth.guards';
 import { Response, Request } from 'express';
+import { NewsletterDto } from './dto/newsletter.dto';
 
 @Controller('user')
 export class UserController {
@@ -68,5 +69,11 @@ export class UserController {
   @UseGuards(AuthGuard)
   async deleteUser(@Req() req: Request) {
     return this.userService.deleteUser(req.userId);
+  }
+
+  /** Newsletter Subscription */
+  @Post('subscribe-newsletter')
+  async subscribeToNewsletter(@Body() newsletterDto: NewsletterDto) {
+    return this.userService.subscribeToNewsletter(newsletterDto.email);
   }
 }
