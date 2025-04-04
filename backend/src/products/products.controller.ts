@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards , Request } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guards';
 import { AuthGuard } from 'src/guards/auth.guards';
 import { ProductsService } from './products.service';
@@ -16,6 +16,16 @@ export class ProductsController {
     @Get('all')
     async getAllProducts() {
         return this.productsService.getAllProducts();
+    }
+
+    @Get('product/:id')
+    async getProductById(@Param('id') id: string) {
+        return this.productsService.getProductById(id);
+    }
+
+    @Get('category/:categoryName')
+    async getProductsByCategory(@Param('categoryName') categoryName: string) {
+        return this.productsService.getProductsByCategory(categoryName);
     }
 
     @Put('update/:id')
@@ -43,5 +53,14 @@ export class ProductsController {
     @Get('getDiscountRate/:productId')
     async getDiscountRate(@Param('productId') productId: string) {
         return this.productsService.getDiscountRate(productId);
+    }
+
+    @Post('add-review/:productId')
+    @UseGuards(AuthGuard)
+    async addReview(@Param('productId') productId: string, @Body() reviewData: any, @Request() req: any) {
+    return this.productsService.addReview(productId, {
+        ...reviewData,
+        createdAt: new Date(),
+    });
     }
 }

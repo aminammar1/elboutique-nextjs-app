@@ -64,3 +64,37 @@ export const updateProduct = async (id, updatedData) => {
     throw new Error(error.response?.data?.message || 'Product update failed')
   }
 }
+
+
+// Fetch product by ID
+export const fetchProductById = async (id) => {
+  const response = await axios.get(`${API_URL}/api/products/product/${id}`)
+  return response.data.data  // Return just the data property
+}
+
+/** Fetch Products By Category */
+export const fetchProductsByCategory = async (categoryName, excludeId = null) => {
+  try {
+      const response = await axios.get(`${API_URL}/api/products/category/${categoryName}`, {
+          params: { exclude: excludeId }, // Only send excludeId as a query param if needed
+      })
+      return response.data;
+  } catch (error) {
+      console.error('Error fetching products by category:', error);
+      return []
+  }
+}
+
+/** Add Review */
+export const addProductReview = async (productId, reviewData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/products/add-review/${productId}`,
+      reviewData,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to add review');
+  }
+};

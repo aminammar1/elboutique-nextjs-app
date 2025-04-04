@@ -26,6 +26,35 @@ export class ProductsService {
         return await this.productModel.find();
     }
 
+    /** Get Product By ID */
+    async getProductById(id: string) { 
+        try {
+            const product = await this.productModel.findById(id);
+            if (!product) throw new NotFoundException('Product not found');
+            return { message: 'Product retrieved successfully', success: true, data: product };
+        }
+        catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    /** Get Products By Category */
+
+    /** Get Products By Category */
+    async getProductsByCategory(categoryName: string) {
+        try {
+            const products = await this.productModel.find({ category: categoryName });
+            return { message: 'Products retrieved successfully', success: true, data: products };
+        } catch (error) {
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     /** Update Product */
     async updateProduct(id: string, updateData: any) {
         const product = await this.productModel.findByIdAndUpdate(id, updateData, { new: true });
@@ -65,4 +94,22 @@ export class ProductsService {
         
         return product.discount || 0;
     }
+
+
+    /** Add Review on Product  */
+    async addReview(productId: string, reviewData: any) {
+        const product = await this.productModel.findById(productId);
+        if (!product) {
+        throw new NotFoundException('Product not found');
+        }
+        product.reviews.push(reviewData);
+        const totalRatings = product.reviews.reduce((acc, r) => acc + Number(r.rating), 0);
+        const avgRating = totalRatings / product.reviews.length;
+        product.rating = Number(avgRating.toFixed(1));
+        await product.save();
+        return {
+            message: 'Review added successfully!',
+            updatedRating: product.rating,
+        };
+        }
 }

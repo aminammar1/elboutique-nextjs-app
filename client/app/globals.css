@@ -3,11 +3,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 @utility container {
   padding-inline: 0px;
   margin-inline: auto;
-  
+
   @variant sm {
     padding-inline: 0px;
   }
@@ -18,7 +17,7 @@
   @variant lg {
     padding-inline: 0px;
   }
-  
+
   @variant xl {
     padding-inline: 0px;
   }
@@ -33,7 +32,6 @@
     padding-inline: 32px;
   }
 }
-
 
 @theme {
   /* Breakpoints */
@@ -108,18 +106,18 @@
 
   /* Text styles */
 
-  --text-h1: 700 4rem/5rem sans-serif;
+  --text-h1: 700 4rem/5rem;
   --letter-spacing-h1: 0.0375em;
-  --text-h2: 700 3rem/2rem sans-serif;
+  --text-h2: 700 3rem/2rem;
   --letter-spacing-h2: 0.035em;
-  --text-h3: 700 2.5rem/3.5rem sans-serif;
+  --text-h3: 700 2.5rem/3.5rem;
   --letter-spacing-h3: 0.05em;
-  --text-h4: 700 2rem/2.75rem sans-serif;
-  --text-h5: 600 1.5rem/2.5rem sans-serif;
-  --text-h6: 500 1.25rem/2rem sans-serif;
-  --text-p: 400 0.875rem/1.5rem sans-serif;
-  --text-body: 400 1rem/1.5rem sans-serif;
-  --text-span: 400 0.75rem/1.5rem sans-serif;
+  --text-h4: 700 2rem/2.75rem;
+  --text-h5: 600 1.5rem/2.5rem;
+  --text-h6: 500 1.25rem/2rem;
+  --text-p: 400 0.875rem/1.5rem;
+  --text-body: 400 1rem/1.5rem;
+  --text-span: 400 0.75rem/1.5rem;
 
   /* Shadows */
   --shadow-button: rgba(0, 0, 0, 0.25) 0px 54px 55px,
@@ -176,29 +174,31 @@
   }
 
   h1 {
-    @apply text-h1;
+    font: var(--text-h1);
   }
   h2 {
-    @apply text-h2;
+    font: var(--text-h2);
   }
   h3 {
-    @apply text-h3;
+    font: var(--text-h3);
   }
   h4 {
-    @reference text-h4;
+    font: var(--text-h4);
   }
   h5 {
-    @apply text-h5;
+    font: var(--text-h5);
   }
   h6 {
-    @apply text-h6;
+    font: var(--text-h6);
   }
-
   p {
-    @apply text-p;
+    font: var(--text-p);
+  }
+  body {
+    font: var(--text-body);
   }
   span {
-    @apply text-span;
+    font: var(--text-span);
   }
 }
 

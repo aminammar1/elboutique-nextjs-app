@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
         <div className='flex flex-col gap-4 items-center cursor-pointer'> 
         <div 
             role='button'
-            onClick={() => router.push(`/product/${product._id}`)}
+            onClick={() => router.push(`/products/${product._id}`)}
             className='flex group/image h-[500px] relative overflow-hidden'>
                 <Image
                     src = {product?.image?.[0] || "/assets/images/w1.jpg" }
