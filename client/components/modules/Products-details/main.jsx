@@ -1,7 +1,6 @@
 'use client'
 import Container from '@/components/custom/Container'
 import React, { useState, useEffect } from 'react'
-import PaymentCard from '../home/PaymentCard'
 import RelatedProducts from './ProductRelated'
 import ProductDescription from './ProductDescription'
 import ProductTabs from './ProductTabs'

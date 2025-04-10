@@ -30,4 +30,9 @@ export class CategoriesController {
     async deleteCategory(@Param('categoryId') categoryId: string) {
         return this.categoriesService.deleteCategory(categoryId);
     }
+
+    @Get('get-category/:categoryId')
+    async getCategory(@Param('categoryId') categoryId: string) {
+        return this.categoriesService.getCategoryById(categoryId);
+    }
 }

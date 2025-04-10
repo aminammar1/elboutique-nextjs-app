@@ -86,4 +86,23 @@ export class SubcategoriesService {
             throw new Error(error.message || 'Internal Server Error');
         }
     }
-}
+
+    /** Get SubCategory by ID */
+    async getSubCategoryById(subCategoryId: string) {
+        try {
+          const subcategory = await this.subcategoryModel.findById(subCategoryId).populate('category') // optional populate
+            if (!subcategory) {
+            throw new NotFoundException('Subcategory not found')
+            }
+    
+            return {
+            message: 'Subcategory fetched successfully',
+            success: true,
+            error: false,
+            data: subcategory,
+            }
+        } catch (error) {
+            throw new Error(error.message || 'Internal Server Error')
+        }
+        }
+    }

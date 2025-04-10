@@ -85,6 +85,45 @@ export const fetchProductsByCategory = async (categoryName, excludeId = null) =>
   }
 }
 
+/** getProductByCategoryID */
+
+export const getProductByCategoryID = async (categoryId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/products/get-product-bycategoryId/${categoryId}`, {withCredentials: true })
+    
+    return response.data.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products by category ID')
+  }
+}
+
+/** Get Product By SubcategoryID */
+
+export const getProductBySubcategoryID = async (subcategoryId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/products/get-product-bysubcategoryId/${subcategoryId}`, { withCredentials: true })
+    return response.data.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products by subcategory ID')
+  }
+}
+
+/** Get Product By PriceRange */
+
+
+export const getProductByPriceRange = async (minPrice, maxPrice) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/products/get-products-by-price-range`, {
+      params: { min: minPrice, max: maxPrice },
+      withCredentials: true,
+    })
+    return response.data.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch products by price range')
+  }
+}
+
+
 /** Add Review */
 export const addProductReview = async (productId, reviewData) => {
   try {

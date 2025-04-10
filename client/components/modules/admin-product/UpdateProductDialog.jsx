@@ -14,18 +14,18 @@ export default function UpdateProductDialog({ product, onClose, onUpdated ,setTo
     watch,
     formState: { errors },
     } = useForm({
-    defaultValues: {
-        productName: product?.productName || '',
-        category: product?.category || '',
-        subCategory: product?.subCategory || '',
-        stockCount: product?.stockCount || '',
-        price: product?.price || '',
-        discount: product?.discount || '',
-        productDescription: product?.productDescription || '',
-        additionalInfo: product?.additionalInfo || '',
-        stylesColors: product?.stylesColors || '',
-        image: product?.image || [],
-    },
+        defaultValues: {
+            productName: product?.productName || '',
+            category: product?.category?.[0]?.name || '',  
+            subCategory: product?.subCategory?.[0]?.name || '',  
+            stockCount: product?.stockCount || '',
+            price: product?.price || '',
+            discount: product?.discount || '',
+            productDescription: product?.productDescription || '',
+            additionalInfo: product?.additionalInfo || '',
+            stylesColors: product?.stylesColors || '',
+            image: product?.image || [],
+        },
     })
 
     const [previewImages, setPreviewImages] = useState(product?.image || [])
@@ -57,16 +57,30 @@ export default function UpdateProductDialog({ product, onClose, onUpdated ,setTo
 
     const onSubmit = async (data) => {
         try {
-            const response = await updateProduct(product._id, { ...data, image: previewImages })
+            // Format category and subCategory to match schema structure
+            const formattedData = {
+                ...data,
+                image: previewImages,
+                category: data.category ? [{
+                    _id: product?.category?.[0]?._id || new ObjectId(), // Use existing ID or create new
+                    name: data.category
+                }] : product?.category,
+                subCategory: data.subCategory ? [{
+                    _id: product?.subCategory?.[0]?._id || new ObjectId(), // Use existing ID or create new
+                    name: data.subCategory
+                }] : product?.subCategory
+            };
+            
+            const response = await updateProduct(product._id, formattedData);
             if (response.success) {
-            setToastData({ type: 'success', message: 'Product updated successfully' })
-            onUpdated()
-            onClose()
+                setToastData({ type: 'success', message: 'Product updated successfully' });
+                onUpdated();
+                onClose();
             }
         } catch (error) {
-            setToastData({ type: 'error', message: error.message || 'Something went wrong. Please try again' })
+            setToastData({ type: 'error', message: error.message || 'Something went wrong. Please try again' });
         }
-        }
+    }
 
     return (
     <Dialog.Root open={!!product} onOpenChange={onClose}>

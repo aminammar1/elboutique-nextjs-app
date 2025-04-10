@@ -8,11 +8,21 @@ export class Product extends Document {
   @Prop({ type: [String], default: [] })
   image: string[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }] })
-  category: Types.ObjectId[];
+  @Prop({ 
+    type: [{
+      _id: { type: Types.ObjectId, ref: 'Category' },
+      name: String
+    }] 
+  })
+  category: Array<{ _id: Types.ObjectId, name: string }>;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'SubCategory' }] })
-  subCategory: Types.ObjectId[];
+  @Prop({ 
+    type: [{
+      _id: { type: Types.ObjectId, ref: 'SubCategory' },
+      name: String
+    }] 
+  })
+  subCategory: Array<{ _id: Types.ObjectId, name: string }>;
 
   @Prop({ type: Number, default: null })
   stockCount: number;

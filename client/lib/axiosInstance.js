@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
         const newToken = await refreshAccessToken()
 
         if (newToken) {
-          Cookies.set('access_token', newToken)
+          Cookies.set('access_token', newToken, { secure: true, sameSite: 'Lax' })
           originalRequest.headers['Authorization'] = `Bearer ${newToken}`
           return axiosInstance(originalRequest)
         } else {

@@ -29,4 +29,9 @@ export class SubcategoriesController {
     async deleteSubCategory(@Param('subCategoryId') subCategoryId: string) {
         return this.subcategoriesService.deleteSubCategory(subCategoryId);
     }
+
+    @Get('get-subcategory/:subCategoryId')
+    async getSubCategory(@Param('subCategoryId') subCategoryId: string) {
+        return this.subcategoriesService.getSubCategoryById(subCategoryId);
+    }
 }

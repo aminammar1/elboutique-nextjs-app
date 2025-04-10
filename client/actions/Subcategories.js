@@ -40,3 +40,15 @@ export const deleteSubcategory = async (id) => {
         return { success: false, message: "Error deleting subcategory" }
     }
 }
+
+
+/** GetSubcategory BY ID  */
+
+export const getSubcategoryById = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/subcategories/get-subcategory/${id}`)
+        return response.data.data
+    } catch (error) {
+        return { success: false, message: "Error fetching subcategory" }
+    }
+}

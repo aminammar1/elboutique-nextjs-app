@@ -19,29 +19,20 @@ export default function RelatedProducts({ product }) {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        const getProducts = async () => {
-            if (!product || !product.category || !Array.isArray(product.category) || product.category.length === 0) return
-
-            setLoading(true)
-            try {
-                const categoryName = product.category[0]
-                
-                if (!categoryName) {
-                    console.error('No valid category name found')
-                    return
+            const getProducts = async () => {
+                setLoading(true)
+                try {
+                    const categoryName = product.category[0]?.name?.trim()
+                    const relatedProducts = await fetchProductsByCategory(categoryName, product._id)
+                    setProducts(relatedProducts.data || [])
+                } catch (error) {
+                    console.log(error.message)
+                } finally {
+                    setLoading(false)
                 }
-
-                const relatedProducts = await fetchProductsByCategory(categoryName, product._id)
-                setProducts(relatedProducts.data || [])
-            } catch (error) {
-                console.log(error.message)
-            } finally {
-                setLoading(false)
             }
-        }
-
-        getProducts()
-    }, [product])
+            getProducts()
+        }, [product])
 
     return (
         <m.section

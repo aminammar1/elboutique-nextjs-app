@@ -5,8 +5,15 @@ import { Pagination } from '@mui/material'
 import usePagination from '@/hooks/usePagination'
 import React, { useEffect, useState } from 'react'
 import { fetchProducts } from '@/actions/product'
+import {
+    getProductByCategoryID,
+    getProductBySubcategoryID,
+    getProductByPriceRange,
+    } from '@/actions/product'
 
 export default function StoreMainContent({
+    categoryId,
+    subcategoryId,
     maxPrice,
     minPrice,
     setMinPrice,
@@ -26,17 +33,28 @@ export default function StoreMainContent({
         const getProducts = async () => {
             setLoading(true)
             try {
-                const data = await fetchProducts()
-                setProducts(data)
-                console.log('Products:', data)
-            } catch (error) {
-                console.error('Error fetching products:', error)
+            let data
+            if (subcategoryId) {
+                data = await getProductBySubcategoryID(subcategoryId)
+            } else if (categoryId) {
+                data = await getProductByCategoryID(categoryId)
+            
+            }
+            else if (minPrice !== 0 || maxPrice !== 7000) {
+                data = await getProductByPriceRange (minPrice, maxPrice)
+                } 
+                else {
+                data = await fetchProducts()
+            }
+            setProducts(data)
+            } catch (err) {
+            console.error(err)
             } finally {
-                setLoading(false)
+            setLoading(false)
             }
         }
         getProducts()
-    }, [page, filter, minPrice, maxPrice])
+        }, [categoryId, subcategoryId, minPrice, maxPrice])
 
     const handleChange = (event, p) => {
         setPage(p)

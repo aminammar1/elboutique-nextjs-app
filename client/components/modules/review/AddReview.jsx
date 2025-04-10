@@ -8,11 +8,11 @@ import { Rating } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { SendIcon, LogInIcon } from 'lucide-react'
-import { Button } from '../custom/Button'
+import { Button } from '@/components/custom/Button'
 import { cn } from '@/lib/utils'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-import Toast from '../custom/Toast'
+import Toast from '@/components/custom/Toast'
 import { addProductReview } from '@/actions/product'
 
 export default function AddReview({ product, reviews, setReviews }) {
@@ -57,22 +57,17 @@ export default function AddReview({ product, reviews, setReviews }) {
     const reviewPayload = {
         review: data.review,
         rating: Number(rating),
-        reviewBy: {
-        id: user.id,
-        fullName: user.fullName,
-        imageUrl: user.imageUrl,
-      },
-      images: [],
-      likes: [],
+        images: [],
+        likes: [],
     }
 
     try {
       setLoading(true)
-      await addProductReview(product._id, reviewPayload)
+      const { review } = await addProductReview(product._id, reviewPayload)
       toast.custom(
         <Toast message="Review added successfully!" status="success" />
       )
-      setReviews([...reviews, { ...reviewPayload, createdAt: new Date() }])
+      setReviews([...reviews, review])
       reset()
       setRating('')
     } catch (err) {

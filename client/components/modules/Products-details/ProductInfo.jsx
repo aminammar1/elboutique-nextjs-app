@@ -21,7 +21,7 @@ export default function ProductInfo({ product }) {
             style={{ color: 'orange' }}
         />
         <div className="flex gap-4 text-xl text-gray-400">
-            <strong>{rating}</strong> (0 reviews)
+            <strong>{rating}</strong> (reviews)
         </div>
         </div>
 

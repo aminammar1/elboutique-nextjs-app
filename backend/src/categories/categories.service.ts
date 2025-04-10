@@ -113,4 +113,23 @@ export class CategoriesService {
             );
         }
     }
+
+
+    /** Get Category by ID */
+    async getCategoryById(categoryId: string) {
+        try {
+            const category = await this.categoryModel.findById(categoryId).exec();
+            if (!category) {
+                throw new NotFoundException('Category not found');
+            }
+            return {
+                message: 'Category fetched successfully',
+                success: true,
+                error: false,
+                data: category,
+            };
+        } catch (error) {
+            throw new Error(error.message || 'Internal Server Error');
+        }
+    }
 }    

@@ -6,7 +6,7 @@ import {
   TabsTrigger,
 } from '@/components/custom/tabs'
 import React from 'react'
-import Review from '@/components/review/main'
+import Review from '../review/main'
 
 export default function ProductTabs({ product, className }) {
   return (

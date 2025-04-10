@@ -25,7 +25,7 @@ export default function ProductDetails({ product, className }) {
                 setStyle={setSelectedStyle}
                 setActive={setActiveStyleIndex}
             />
-            <ProductShare product={product} />
+            <ProductShare product={product} /> 
         </div>
     )
 }

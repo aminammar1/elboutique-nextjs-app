@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { Minus, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,14 +25,26 @@ const AccordionTrigger = React.forwardRef(
       categoryId,
       checkedCategory,
       setCheckedCategory,
+      router,
       ...props
     },
     ref
   ) => {
     const isChecked = checkedCategory === categoryId
 
-    const handleToggle = () => {
-      setCheckedCategory(isChecked ? null : categoryId) 
+    const handleCheckedChange = (checked) => {
+      const newValue = checked ? categoryId : null
+      setCheckedCategory(newValue)
+
+      const params = new URLSearchParams(window.location.search)
+
+      if (checked) {
+        params.set('category', categoryId)
+      } else {
+        params.delete('category')
+      }
+
+      router.push(`/categories/${categoryId}/products?${params.toString()}`, { scroll: false })
     }
 
     return (
@@ -41,16 +53,15 @@ const AccordionTrigger = React.forwardRef(
           ref={ref}
           className={cn(
             'flex flex-1 items-center gap-4 py-4 font-medium hover:underline transition-all',
-            ' [&[data-state=open]>.plus]:hidden [&[data-state=closed]>.minus]:hidden',
+            '[&[data-state=open]>.plus]:hidden [&[data-state=closed]>.minus]:hidden',
             className
           )}
-          onClick={handleToggle} // Sync accordion state with checkbox
           {...props}
         >
           <Checkbox
             className="h-6 w-6"
             checked={isChecked}
-            onCheckedChange={handleToggle}
+            onCheckedChange={handleCheckedChange}
           />
           {children}
           <Plus className="ms-auto h-6 w-6 plus shrink-0 transition-all duration-200" />
@@ -60,6 +71,7 @@ const AccordionTrigger = React.forwardRef(
     )
   }
 )
+
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
 
 const AccordionContent = React.forwardRef(

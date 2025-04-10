@@ -4,9 +4,6 @@ import React from 'react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-  DropdownMenuGroup,
-  DropdownMenuPortal,
-  DropdownMenuSub,
   DropdownMenuRadioGroup,
   DropdownMenuContent,
   DropdownMenuSeparator,

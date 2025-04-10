@@ -1,25 +1,63 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model , Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schemas/product.schema';
+import { User } from 'src/user/schemas/user.schema';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectModel(Product.name)
         private readonly productModel: Model<Product>,
+        @InjectModel(User.name)
+        private readonly userModel: Model<User>,
     ) {}
 
     /** Create Product */
-    async createProduct(ProductData: any) {
-        try {
-            const product = new this.productModel(ProductData);
+        async createProduct(productData: any) {
+            try {
+            const productToCreate = {
+                ...productData,
+                price: Number(productData.price),
+                discount: productData.discount ? Number(productData.discount) : 0,
+                stockCount: productData.stockCount ? Number(productData.stockCount) : 0,
+                
+                // Convert category data to proper format if it's not already
+                category: Array.isArray(productData.category) 
+                ? productData.category.map(cat => ({
+                    _id: new this.productModel.base.Types.ObjectId(cat._id),
+                    name: cat.name
+                    }))
+                : [{
+                    _id: new this.productModel.base.Types.ObjectId(productData.category._id),
+                    name: productData.category.name
+                    }],
+                
+                // Convert subcategory data similarly
+                subCategory: Array.isArray(productData.subCategory)
+                ? productData.subCategory.map(sub => ({
+                    _id: new this.productModel.base.Types.ObjectId(sub._id),
+                    name: sub.name
+                    }))
+                : [{
+                    _id: new this.productModel.base.Types.ObjectId(productData.subCategory._id),
+                    name: productData.subCategory.name
+                    }]
+            };
+        
+            const product = new this.productModel(productToCreate);
             await product.save();
-            return { message: 'Product created successfully', success: true, data: product };
-        } catch (error) {
-            throw new Error(error.message || 'Internal Server Error');
+            
+            return { 
+                message: 'Product created successfully', 
+                success: true, 
+                data: product 
+            };
+            } catch (error) {
+            console.error('Error creating product:', error);
+            throw new Error(error.message || 'Failed to create product');
+            }
         }
-    }
 
     /** Get All Products */
     async getAllProducts() {
@@ -42,17 +80,56 @@ export class ProductsService {
         }
     }
 
-    /** Get Products By Category */
+    /** Get Products By CategoryID */
 
-    /** Get Products By Category */
-    async getProductsByCategory(categoryName: string) {
-        try {
-            const products = await this.productModel.find({ category: categoryName });
-            return { message: 'Products retrieved successfully', success: true, data: products };
-        } catch (error) {
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+        async getProductsByCategoryId(categoryId: string) {
+            try {
+            const objectId = new Types.ObjectId(categoryId)
+            const products = await this.productModel.find({
+                'category._id': objectId
+            })
+            return {
+                message: 'Products retrieved successfully',
+                success: true,
+                data: products
+            }
+            } catch (error) {
+            throw new HttpException('Invalid Category ID or Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+            }
         }
-    }
+
+        /** Get Products By SubCategoryID */
+            async getProductsBySubCategoryId(subCategoryId: string) {
+                try {
+                const objectId = new Types.ObjectId(subCategoryId)
+                const products = await this.productModel.find({
+                    'subCategory._id': objectId
+                })
+                return {
+                    message: 'Products retrieved successfully',
+                    success: true,
+                    data: products
+                }
+                } catch (error) {
+                throw new HttpException('Invalid SubCategory ID or Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)
+                }
+            }
+
+    /** Get Products By Category Name */
+        async getProductsByCategoryName(categoryName: string) {
+            try {
+            const products = await this.productModel.find({
+                'category.name': categoryName
+            });
+            return {
+                message: 'Products retrieved successfully',
+                success: true,
+                data: products
+            };
+            } catch (error) {
+            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
 
 
     /** Update Product */
@@ -96,20 +173,55 @@ export class ProductsService {
     }
 
 
-    /** Add Review on Product  */
-    async addReview(productId: string, reviewData: any) {
-        const product = await this.productModel.findById(productId);
-        if (!product) {
-        throw new NotFoundException('Product not found');
+        /** Get Product By Price Range  */
+
+        async getProductsByPriceRange(minPrice: number, maxPrice: number , ) {
+            try {
+                const products = await this.productModel.find({
+                    price: { $gte: minPrice, $lte: maxPrice }
+                });
+                return {
+                    message: 'Products retrieved successfully',
+                    success: true,
+                    data: products
+                };
+            }
+            catch (error) {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-        product.reviews.push(reviewData);
+
+
+     /** Add Review on Product  */
+        async addReview(productId: string, userId: string, reviewData: any) {
+        const product = await this.productModel.findById(productId);
+        if (!product) throw new NotFoundException('Product not found');
+        const user = await this.userModel.findById(userId).select('name avatar');
+        if (!user) throw new NotFoundException('User not found');
+        
+        const review = {
+            ...reviewData,
+            reviewBy: {
+                id: user._id,
+                fullName: user.name,
+                imageUrl: user.avatar,
+            },
+            createdAt: new Date(),
+        };
+        
+        product.reviews.push(review);
+        
         const totalRatings = product.reviews.reduce((acc, r) => acc + Number(r.rating), 0);
         const avgRating = totalRatings / product.reviews.length;
         product.rating = Number(avgRating.toFixed(1));
+        
         await product.save();
+        
         return {
             message: 'Review added successfully!',
             updatedRating: product.rating,
+            review: review 
         };
-        }
+    }
+    
 }

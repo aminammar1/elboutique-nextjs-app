@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards , Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards , Request , Query } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guards';
 import { AuthGuard } from 'src/guards/auth.guards';
 import { ProductsService } from './products.service';
@@ -24,8 +24,8 @@ export class ProductsController {
     }
 
     @Get('category/:categoryName')
-    async getProductsByCategory(@Param('categoryName') categoryName: string) {
-        return this.productsService.getProductsByCategory(categoryName);
+    async getProductsByCategoryName(@Param('categoryName') categoryName: string) {
+        return this.productsService.getProductsByCategoryName(categoryName);
     }
 
     @Put('update/:id')
@@ -57,10 +57,32 @@ export class ProductsController {
 
     @Post('add-review/:productId')
     @UseGuards(AuthGuard)
-    async addReview(@Param('productId') productId: string, @Body() reviewData: any, @Request() req: any) {
-    return this.productsService.addReview(productId, {
-        ...reviewData,
-        createdAt: new Date(),
-    });
+    async addReview(
+        @Param('productId') productId: string,
+        @Body() reviewData: any,
+        @Request() req: any
+    ) {
+        return this.productsService.addReview(productId, req.userId, reviewData);
     }
+
+    @Get('get-product-bycategoryId/:categoryId')
+    async getProductByCategoryId(@Param('categoryId') categoryId: string) {
+        return this.productsService.getProductsByCategoryId(categoryId);
+    }
+
+    @Get('get-product-bysubcategoryId/:subcategoryId')
+    async getProductBySubCategoryId(@Param('subcategoryId') subcategoryId: string) {
+        return this.productsService.getProductsBySubCategoryId(subcategoryId);
+    }
+
+        @Get('get-products-by-price-range')
+            async getProductsByPriceRange(
+            @Query('min') min: string = '0',
+            @Query('max') max: string = '10000',
+            ) {
+                return this.productsService.getProductsByPriceRange(
+                    parseFloat(min),
+                    parseFloat(max),
+                )
+            }
 }

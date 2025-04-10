@@ -37,3 +37,12 @@ export const deleteCategory = async (categoryId) => {
     throw new Error(error.response?.data?.message || 'Failed to delete category')
   }
 }
+
+export const getCategoryById = async (categoryId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/categories/get-category/${categoryId}`, { withCredentials: true })
+    return response.data.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch category')
+  }
+}

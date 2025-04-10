@@ -124,7 +124,7 @@ export default function MainMenu() {
                                                     className="font-normal duration-100 ease-linear hover:translate-x-1"
                                                 >
                                                     <Link
-                                                        href={`/categories/${subCat.link}/products`}
+                                                        href={`/subcategory/${subCat.link}/products`}
                                                         className="hover:text-gray-600"
                                                     >
                                                         {subCat.name}

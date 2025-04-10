@@ -12,7 +12,7 @@ import { fetchProductById } from '@/actions/product'
 import ProductPage from '@/components/modules/Products-details/main'
 
 export default async function Page({ params }) {
-  const { id } = await params 
+  const { id } = await params
   const product = await fetchProductById(id)
 
   return (
@@ -46,10 +46,10 @@ export default async function Page({ params }) {
                 <>
                   <BreadcrumbItem>
                     <Link
-                      href={`/categories/${product._id}`} 
+                      href={`/categories/${product.category[0]._id}/products`}
                       className="text-xl font-bold text-black hover:text-gray-700"
                     >
-                      {product.category[0]} 
+                      {product.category[0].name}
                     </Link>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
@@ -61,10 +61,10 @@ export default async function Page({ params }) {
                 <>
                   <BreadcrumbItem>
                     <Link
-                      href={`/categories/${product._id}/subcategories/${product._id}`} // Change if needed
+                      href={`/subcategory/${product.subCategory[0]._id}/products`}
                       className="text-xl font-bold text-black hover:text-gray-700"
                     >
-                      {product.subCategory[0]} 
+                      {product.subCategory[0].name}
                     </Link>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

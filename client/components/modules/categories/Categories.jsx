@@ -2,21 +2,24 @@
 
 import Container from '@/components/custom/Container'
 import Row from '@/components/custom/Row'
-import React, { useState } from 'react'
-import StoreSideBar from './StoreSideBar'
-import StoreMainContent from './StoreMainContent'
+import React, { useState, useEffect } from 'react'
+import StoreSideBar from '../Store/StoreSideBar'
+import StoreMainContent from '../Store/StoreMainContent'
+import { useParams } from 'next/navigation'
 
-export default function Store() {
+export default function CategoriesPage() {
+  const { id: categoryId } = useParams() 
   const [minPrice, setMinPrice] = useState(0)
-  const [maxPrice, setMaxPrice] = useState(7000)
+  const [maxPrice, setMaxPrice] = useState(1000)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+  }, [categoryId])
 
   return (
     <section className="my-10">
       <Container>
         <Row className="mt-10 gap-12 items-start">
-          
-          {/* Sidebar of the Store  */}
           <StoreSideBar
             minPrice={minPrice}
             maxPrice={maxPrice}
@@ -26,8 +29,8 @@ export default function Store() {
             setLoading={setLoading}
             className="hidden lg:block"
           />
-          {/* Main content of the Store  */}
           <StoreMainContent
+            categoryId={categoryId}
             minPrice={minPrice}
             maxPrice={maxPrice}
             setMinPrice={setMinPrice}
