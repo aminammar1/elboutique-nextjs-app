@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { CategoriesModule } from './categories/categories.module';
 import { SubcategoriesModule } from './subcategories/subcategories.module';
 import { ProductsModule } from './products/products.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ProductsModule } from './products/products.module';
     CategoriesModule,
     SubcategoriesModule,
     ProductsModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,8 +4,13 @@ import { Toaster } from 'react-hot-toast'
 export default function ToastProvider() {
   return (
     <Toaster
-      containerStyle={{
-        top: 50,
+      position="bottom-right" 
+      toastOptions={{
+        duration: 4000,
+        style: {
+          background: '#1f1f1f',
+          color: '#fff',
+        },
       }}
     />
   )

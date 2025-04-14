@@ -1,10 +1,21 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards , Request , Query } from '@nestjs/common';
-import { AdminGuard } from 'src/guards/admin.guards';
-import { AuthGuard } from 'src/guards/auth.guards';
-import { ProductsService } from './products.service';
+    import {
+    Controller,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Param,
+    Body,
+    UseGuards,
+    Request,
+    Query,
+    } from '@nestjs/common';
+    import { AdminGuard } from 'src/guards/admin.guards';
+    import { AuthGuard } from 'src/guards/auth.guards';
+    import { ProductsService } from './products.service';
 
-@Controller('products')
-export class ProductsController {
+    @Controller('products')
+    export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Post('create-product')
@@ -41,13 +52,19 @@ export class ProductsController {
     }
 
     @Get('best-price-with-discount/:productId')
-    async getBestPriceWithDiscountFromProduct(@Param('productId') productId: string) {
+    async getBestPriceWithDiscountFromProduct(
+        @Param('productId') productId: string,
+    ) {
         return this.productsService.getBestPriceWithDiscountFromProduct(productId);
     }
 
     @Get('best-price-without-discount/:productId')
-    async getBestPriceWithoutDiscountFromProduct(@Param('productId') productId: string) {
-        return this.productsService.getBestPriceWithoutDiscountFromProduct(productId);
+    async getBestPriceWithoutDiscountFromProduct(
+        @Param('productId') productId: string,
+    ) {
+        return this.productsService.getBestPriceWithoutDiscountFromProduct(
+        productId,
+        );
     }
 
     @Get('getDiscountRate/:productId')
@@ -60,7 +77,7 @@ export class ProductsController {
     async addReview(
         @Param('productId') productId: string,
         @Body() reviewData: any,
-        @Request() req: any
+        @Request() req: any,
     ) {
         return this.productsService.addReview(productId, req.userId, reviewData);
     }
@@ -71,18 +88,39 @@ export class ProductsController {
     }
 
     @Get('get-product-bysubcategoryId/:subcategoryId')
-    async getProductBySubCategoryId(@Param('subcategoryId') subcategoryId: string) {
+    async getProductBySubCategoryId(
+        @Param('subcategoryId') subcategoryId: string,
+    ) {
         return this.productsService.getProductsBySubCategoryId(subcategoryId);
     }
 
-        @Get('get-products-by-price-range')
-            async getProductsByPriceRange(
-            @Query('min') min: string = '0',
-            @Query('max') max: string = '10000',
-            ) {
-                return this.productsService.getProductsByPriceRange(
-                    parseFloat(min),
-                    parseFloat(max),
-                )
-            }
-}
+    @Get('get-products-by-price-range')
+    async getProductsByPriceRange(
+        @Query('min') min: string = '0',
+        @Query('max') max: string = '10000',
+    ) {
+        return this.productsService.getProductsByPriceRange(
+        parseFloat(min),
+        parseFloat(max),
+        );
+    }
+
+    @Get('filter')
+    async getFiltered(
+        @Query('filter') filter: string,
+        @Query('perPage') perPage: number,
+        @Query('page') page: number,
+    ) {
+        return await this.productsService.getFilteredProducts(
+        filter,
+        Number(perPage),
+        Number(page),
+        );
+    }
+
+    /** Search Product Controller */
+    @Get('search')
+    async searchProducts(@Query('query') query: string) {
+        return this.productsService.searchProducts(query);
+    }
+    }

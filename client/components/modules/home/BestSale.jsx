@@ -20,21 +20,21 @@ export default function BestSale() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-    const getProducts = async () => {
-        setLoading(true)
-        try {
-        const data = await fetchProducts()
-        setProducts(data)
-        console.log('Products:', data)
-        } catch (error) {
-        console.error('Error fetching products:', error)
-        } finally {
-        setLoading(false)
-        }
-    }
-    getProducts()
-    }, [])
+        useEffect(() => {
+            const getProducts = async () => {
+            setLoading(true)
+            try {
+                const data = await fetchProducts()
+                const limitedData = data.slice(0, 6)
+                setProducts(limitedData)
+            } catch (error) {
+                console.error('Error fetching products:', error)
+            } finally {
+                setLoading(false)
+            }
+            }
+            getProducts()
+        }, [])
 
     return (
     <>

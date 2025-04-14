@@ -223,5 +223,68 @@ export class ProductsService {
             review: review 
         };
     }
-    
+
+        async getFilteredProducts(filter: string, perPage: number, page: number) {
+            try {
+            let sort: any = {}
+        
+            switch (filter) {
+                case 'alphabetic':
+                sort = { name: 1 }
+                break
+                case 'priceLowToHigh':
+                sort = { price: 1 }
+                break
+                case 'priceHighToLow':
+                sort = { price: -1 }
+                break
+                case 'latest':
+                sort = { createdAt: -1 }
+                break
+                default:
+                sort = {}
+            }
+        
+            const skip = (page - 1) * perPage
+            const products = await this.productModel
+                .find()
+                .sort(sort)
+                .skip(skip)
+                .limit(perPage)
+        
+            const total = await this.productModel.countDocuments()
+        
+            return {
+                message: 'Filtered products retrieved successfully',
+                success: true,
+                data: products,
+                total,
+            }
+            } catch (error) {
+            throw new HttpException('Failed to fetch filtered products', HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+        }
+
+
+        /** Search Product */
+
+            async searchProducts(query: string) {
+                try {
+                const products = await this.productModel.find({
+                    $or: [
+                    { productName: { $regex: query, $options: 'i' } },
+                    { productDescription: { $regex: query, $options: 'i' } },
+                    ],
+                });
+            
+                return {
+                    message: 'Products retrieved successfully',
+                    success: true,
+                    data: products,
+                };
+                } catch (error) {
+                console.error(error);
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
 }
