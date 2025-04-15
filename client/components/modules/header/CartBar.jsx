@@ -18,6 +18,7 @@
     const router = useRouter()
     const dispatch = useDispatch()
     const { cartItems } = useSelector((state) => state.cart)
+    console.log('cart item:', cartItems)
 
     const handleRemoveItem = async (item) => {
         try {

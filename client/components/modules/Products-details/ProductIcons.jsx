@@ -8,6 +8,7 @@
     import { memoize } from 'proxy-memoize'
     import { addToCart, updateToCart } from '@/store/CartSlice'
     import { addCartItem } from '@/actions/cart'
+    import { getBestPriceWithDiscountFromProduct } from '@/lib/utils'
 
     export default function ProductIcons({
     product,
@@ -42,8 +43,8 @@
                 _id: cartItem._id,
                 productId: product._id,
                 name: product.productName,
-                price: product.price,
-                images: product.image,
+                price: getBestPriceWithDiscountFromProduct(product),
+                images: product?.image ?? [],
                 qty: qty,
             }
         

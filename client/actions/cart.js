@@ -1,5 +1,6 @@
 import axios from 'axios'
 const API_URL = process.env.NEXT_PUBLIC_API_URL
+import { updateToCart } from '@/store/CartSlice'
 
 export const fetchCartItems = async () => {
     try {
@@ -52,3 +53,21 @@ export const deleteCartItem = async (cartItemId) => {
         throw error
     }
 }
+
+    export const loadUserCartItems = () => async (dispatch, getState) => {
+        try {
+        const response = await fetchCartItems() 
+    
+        const formatted = response.map((item) => ({
+            _id: item._id,
+            qty: item.quantity,
+            name: item.productId.productName,
+            price: item.productId.price,
+            images: item.productId.image,
+        }))
+    
+        dispatch(updateToCart(formatted))
+        } catch (err) {
+        console.error('Failed to load cart:', err)
+        }
+    }

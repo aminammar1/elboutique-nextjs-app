@@ -10,6 +10,13 @@ import { Eye, Heart } from "lucide-react"
 import { Button } from './Button'
 import { useRouter } from 'next/navigation'
 import {m} from 'framer-motion'
+import toast from 'react-hot-toast'
+import Toast from './Toast'
+import { useDispatch, useSelector } from 'react-redux'
+import { memoize } from 'proxy-memoize'
+import { addToCart } from '@/store/CartSlice'
+import { addCartItem } from '@/actions/cart'
+
 
 
 export default function ProductCard({ product }) {
@@ -19,9 +26,56 @@ export default function ProductCard({ product }) {
     const discountRate = getDiscountRate(bestPriceWithoutDiscount, bestPriceWithDiscount)
     
     const router = useRouter()
+    const dispatch = useDispatch()
+    const cart = useSelector(memoize((state) => state.cart))
 
-    const addToWishList = (e) => {
+    const addToWishList = async (e) => {
         e.currentTarget.setAttribute("disabled", true)
+    
+        try {
+            const qty = 1 // default qty for wishlist add
+            if (qty > product.stockCount) {
+                toast.custom(
+                    <Toast
+                        message="The stock is limited"
+                        status="error"
+                    />
+                )
+                return
+            }
+    
+            const cartItem = await addCartItem(product._id, qty)
+    
+            const itemForCart = {
+                _id: cartItem._id,
+                productId: product._id,
+                name: product.productName,
+                price: getBestPriceWithDiscountFromProduct(product),
+                images: product?.image ?? [],
+                qty: qty,
+            }
+    
+            const _uid = `${itemForCart.productId}_${itemForCart.styleBefore}_${itemForCart.optionBefore}`
+            const exist = cart.cartItems.find((item) => item._uid === _uid)
+    
+            if (!exist) {
+                dispatch(addToCart({
+                    ...itemForCart,
+                    _uid,
+                }))
+                toast.custom(<Toast message="Product added to cart" status="success" />)
+            } else {
+                toast.custom(<Toast message="Product already in cart" status="info" />)
+            }
+    
+        } catch (err) {
+            toast.custom(
+                <Toast
+                    message={err.message || 'Error adding to cart. Please login first.'}
+                    status="error"
+                />
+            )
+        }
     }
 
 

@@ -2,17 +2,25 @@
     import { InjectModel } from '@nestjs/mongoose';
     import { Model } from 'mongoose';
     import { CartProduct } from './schemas/cart.schema';
+    import { User } from 'src/user/schemas/user.schema';
 
     @Injectable()
     export class CartService {
     constructor(
         @InjectModel(CartProduct.name)
         private readonly cartModel: Model<CartProduct>,
+        @InjectModel(User.name)
+        private readonly userModel: Model<User>,
     ) {}
 
     async createCartItem(userId: string, productId: string, quantity: number) {
         const cartItem = new this.cartModel({ userId, productId, quantity });
-        return await cartItem.save();
+        const savedCartItem = await cartItem.save();
+        
+        await this.userModel.findByIdAndUpdate(userId, {
+            $push: { shopping_cart: savedCartItem._id },
+        });
+        return savedCartItem;
     }
 
     async getCartItemsByUser(userId: string) {

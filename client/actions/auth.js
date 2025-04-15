@@ -1,5 +1,8 @@
 import axios from 'axios'
 import { loginSuccess, logout } from '../store/userSlice'
+import { emptyToCart } from '@/store/CartSlice'
+import { fetchUserDetails } from './User'
+import { loadUserCartItems } from './cart'
 import {
   getAuth,
   signInWithPopup,
@@ -40,6 +43,8 @@ export const signin = (credentials) => async (dispatch) => {
 
     const { userId } = response.data
     dispatch(loginSuccess({ id: userId }))
+    dispatch(fetchUserDetails()) 
+    dispatch(loadUserCartItems()) 
 
     return { success: true, message: response.data.message }
   } catch (error) {
@@ -74,6 +79,7 @@ export const signout = () => async (dispatch) => {
     )
 
     dispatch(logout())
+    dispatch(emptyToCart()) // Clear cart on logout
     
     return {
       success: true,
@@ -104,6 +110,8 @@ export const googleAuth = () => async (dispatch) => {
     }, { withCredentials: true })
 
     dispatch(loginSuccess({ id: user.uid  }))
+    dispatch(fetchUserDetails()) 
+    dispatch(loadUserCartItems()) 
     return { success: true, message: data.message }
   } catch (error) {
     return { success: false, message: error.message || "Google login failed" }
@@ -125,6 +133,8 @@ export const facebookAuth = () => async (dispatch) => {
     }, { withCredentials: true })
 
     dispatch(loginSuccess({ id: user.uid }))
+    dispatch(fetchUserDetails()) 
+    dispatch(loadUserCartItems()) 
     return { success: true, message: data.message }
   } catch (error) {
     return { success: false, message: error.message || "Facebook login failed" }

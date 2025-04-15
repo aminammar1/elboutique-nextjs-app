@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { signout } from '@/actions/auth'
-import { cn } from '@/lib/utils'
 import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

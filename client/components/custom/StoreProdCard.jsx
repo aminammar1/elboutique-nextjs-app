@@ -25,41 +25,52 @@ export default function StoreProdCard({ product }) {
                 role="button"
                 data-cy="productItem"
                 onClick={() => router.push(`/products/${product._id}`)}
-                className="flex group/image h-[400px] relative overflow-hidden"
-            >
-                    <Image
+                className="relative group w-full h-[500px] overflow-hidden rounded-2xl shadow-md cursor-pointer"
+                >
+                {/* First Image */}
+                <Image
                     src={product?.image?.[0] || "/assets/images/placeholder.jpg"}
                     alt={product?.productName || "Product image"}
-                    width="300"
-                    height="400"
-                    className="duration-300 ease-linear group-hover/image:translate-x-full object-cover"
+                    width={500}
+                    height={500}
+                    className="object-cover w-full h-full transition-opacity duration-700 ease-in-out group-hover:opacity-0"
                 />
+
+                {/* Second Image on hover */}
                 {product?.image?.[1] && (
-                <Image
+                    <Image
                     src={product.image[1]}
                     alt={product.productName}
-                    width="300"
-                    height="450"
-                    className="absolute duration-300 ease top-0 -translate-x-full group-hover/image:translate-x-0"
-                />
-            )}
+                    width={500}
+                    height={500}
+                    className="absolute inset-0 object-cover w-full h-full opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
+                    />
+                )}
+
+                {/* Hover Actions (like Eye icon) */}
                 <m.div
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.3, type: "spring" }}
-                    className="hidden absolute top-4 right-4 flex-col gap-4 group-hover/image:flex duration-300 ease-in"
+                    className="absolute top-4 right-4 flex-col gap-4 hidden group-hover:flex"
                 >
                     <Button
-                        onClick={() => router.push(`/products/${product._id}`)}
-                        variant="outline"
-                        size="icon"
-                        className="hover:bg-black hover:text-white"
+                    onClick={() => router.push(`/products/${product._id}`)}
+                    variant="outline"
+                    size="icon"
+                    className="backdrop-blur-sm bg-white/70 hover:bg-black hover:text-white shadow-md transition"
                     >
-                        <Eye />
+                    <Eye />
                     </Button>
                 </m.div>
-            </div>
+
+                {/* Optional: Product Name Overlay */}
+                <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-4">
+                    <p className="text-white text-xl font-semibold">{product?.productName}</p>
+                </div>
+                </div>
+
             
             {/* Product Content */}
             <div className="flex flex-col gap-4 items-start py-4">
