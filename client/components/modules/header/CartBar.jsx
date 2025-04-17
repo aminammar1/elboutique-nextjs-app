@@ -18,12 +18,13 @@
     const router = useRouter()
     const dispatch = useDispatch()
     const { cartItems } = useSelector((state) => state.cart)
-    console.log('cart item:', cartItems)
 
     const handleRemoveItem = async (item) => {
         try {
         await deleteCartItem(item._id)
-        toast.custom(<Toast message="Product removed from cart" status="success" />)
+        toast.custom(
+            <Toast message="Product removed from cart" status="success" />
+        )
         const newCart = cartItems.filter((p) => p._id !== item._id)
         dispatch(updateToCart(newCart))
         } catch (error) {
@@ -37,7 +38,9 @@
         try {
         const updatedItem = await updateCartItem(item._id, newQty)
         const updatedCart = cartItems.map((cartItem) =>
-            cartItem._id === item._id ? { ...cartItem, qty: updatedItem.quantity } : cartItem
+            cartItem._id === item._id
+            ? { ...cartItem, qty: updatedItem.quantity }
+            : cartItem
         )
         dispatch(updateToCart(updatedCart))
         toast.custom(<Toast message="Quantity updated" status="success" />)
@@ -47,7 +50,10 @@
         }
     }
 
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    const subtotal = cartItems.reduce(
+        (acc, item) => acc + item.price * item.qty,
+        0
+    )
 
     return (
         <AnimatePresence>
@@ -71,12 +77,17 @@
             className="absolute top-[54px] right-0 h-fit w-[360px] bg-white z-[9999] p-4 shadow-2xl"
             >
             <div className="flex flex-col justify-between gap-8">
-                <p className="text-center font-semibold text-lg">Your Shopping Cart</p>
+                <p className="text-center font-semibold text-lg">
+                Your Shopping Cart
+                </p>
 
                 <div className="flex flex-col snap-y gap-6 border-b border-gray-200 pb-4 max-h-[360px] overflow-y-auto">
                 {cartItems.length > 0 ? (
                     cartItems.map((item) => (
-                    <div key={item._id} className="flex justify-between gap-4 items-center">
+                    <div
+                        key={item._id}
+                        className="flex justify-between gap-4 items-center"
+                    >
                         <Image
                         src={item?.images[0]}
                         alt={item.name}
@@ -140,7 +151,7 @@
                     view cart
                     </Link>
                     <Button
-                    onClick={() => {}}
+                    onClick={() => router.push('/checkout')}
                     variant="default"
                     size="lg"
                     className="rounded-sm py-8 capitalize text-xl"

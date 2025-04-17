@@ -1,27 +1,33 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+    /** @type {import('next').NextConfig} */
+    const nextConfig = {
     images: {
-    remotePatterns: [
+        remotePatterns: [
         {
-        protocol: 'http',
-        hostname: 'res.cloudinary.com',
-        port: '',
-        pathname: '/**',
+            protocol: 'http',
+            hostname: 'res.cloudinary.com',
+            port: '',
+            pathname: '/**',
         },
         {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        port: '',
-        pathname: '/**',
+            protocol: 'https',
+            hostname: 'res.cloudinary.com',
+            port: '',
+            pathname: '/**',
         },
         {
             protocol: 'https',
             hostname: 'lh3.googleusercontent.com',
             port: '',
             pathname: '/**',
-            },
-        ],
         },
+        {
+            protocol: 'https',
+            hostname: 'cdn-icons-png.flaticon.com',
+            port: '',
+            pathname: '/**',
+        },
+        ],
+    },
     }
 
-export default nextConfig
+    export default nextConfig

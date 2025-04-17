@@ -2,7 +2,7 @@
 export const slidesData = [
   {
     slug: 'banner-home',
-    image: '/assets/images/Rectangle.jpg',
+    image: '/assets/images/banner-women.jpg',
     title: 'Welcome to EL Boutique',
     subtitle: 'Best deals available',
     description: 'Shop for the best deals on our online store.',

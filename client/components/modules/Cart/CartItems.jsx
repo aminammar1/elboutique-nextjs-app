@@ -7,6 +7,7 @@ import { updateToCart } from '@/store/CartSlice'
 import Toast from '@/components/custom/Toast'
 import toast from 'react-hot-toast'
 import ProductQtyCart from '@/components/custom/ProductQtyCart'
+import { deleteCartItem } from '@/actions/cart'
 
 
 export default function CartItem ({item})  {
@@ -15,9 +16,10 @@ export default function CartItem ({item})  {
     
     const handleRemoveItem = async (item) => {
         try {
+            await deleteCartItem(item._id)
+            toast.custom(<Toast message="Product removed from cart" status="success" />)
             const newCart = cartItems.filter((p) => p._id !== item._id)
             dispatch(updateToCart(newCart))
-            toast.custom(<Toast message="Product removed from cart" status="success" />)
         } catch (error) {
             console.error('Error removing item:', error)
             toast.custom(<Toast message="Failed to remove item" status="error" />)
