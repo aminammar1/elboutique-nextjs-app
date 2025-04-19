@@ -3,17 +3,19 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from '@/lib/storage'
 import userReducer from './userSlice'
 import cartReducer from './CartSlice'
+import OrderReducer from './OrderSlice'
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user' , 'cart'], 
+  whitelist: ['user' , 'cart' , 'order'], 
 }
 
 // Create the root reducer with combineReducers
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
+  order: OrderReducer,
 })
 
 // Wrap the root reducer with persistReducer

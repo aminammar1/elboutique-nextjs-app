@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import * as yup from 'yup'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { cn } from '@/lib/utils'
@@ -16,6 +16,8 @@ import CurrencyFormat from '@/components/custom/FormatCurrency'
 import { Button } from '@/components/custom/Button'
 import { createAddress, getAllAddresses } from '@/actions/address'
 import { verifyCoupon } from '@/actions/coupons'
+import { createOrder } from '@/actions/order'
+import { emptyToCart } from '@/store/CartSlice'
 
 export default function CheckoutPage({ couponGenerated }) {
   const initialValues = {
@@ -41,12 +43,126 @@ export default function CheckoutPage({ couponGenerated }) {
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
   const [discount, setDiscount] = useState(0)
   const cart = useSelector((state) => state.cart)
+  const dispatch = useDispatch()
 
   const shippingFee = 0
   const subtotal = cart.cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   )
+
+  const placeOrderHandler = async () => {
+    try {
+      setLoading(true)
+
+      // Validate required fields
+      if (
+        !cart ||
+        !selectedAddress ||
+        !selectedPayment ||
+        !selectedDelivery ||
+        !totalAfterDiscount
+      ) {
+        toast.custom(
+          <Toast
+            message="Choose an address, a payment method, and a delivery method to continue."
+            status="error"
+          />
+        )
+        return
+      }
+
+      // Prepare order data
+      const orderData = {
+        products: cart.cartItems.map((item) => ({
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          images:
+            item.images && item.images.length > 0
+              ? item.images[0]
+              : item.image || '',
+          style: item.style || { color: 'default' },
+          option: item.option || 'default',
+        })),
+        shippingAddress: {
+          firstName: selectedAddress.firstName,
+          lastName: selectedAddress.lastName,
+          address: selectedAddress.address,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          zipCode: selectedAddress.zipCode,
+          country: selectedAddress.country,
+          phoneNumber: selectedAddress.phoneNumber,
+        },
+        paymentMethod: selectedPayment.slug,
+        total: totalAfterDiscount,
+        totalBeforeDiscount: subtotal,
+        shippingStatus: 'pending',
+        shippingTimes: selectedDelivery.times,
+        shippingPrice: selectedDelivery.price,
+      }
+
+      // Add coupon if applied
+      if (discount > 0) {
+        orderData.couponApplied = {
+          code: couponGenerated || 'DISCOUNT',
+          discount: discount,
+        }
+      }
+
+      // Create the order via API
+      const result = await createOrder(orderData)
+
+      if (!result || result.error) {
+        const errorMessage =
+          result?.error || 'Failed to create order. Please try again.'
+        console.error('Order creation error:', errorMessage)
+        toast.custom(<Toast message={errorMessage} status="error" />)
+        return
+      }
+
+      // Clear the cart after successful order
+      dispatch(emptyToCart())
+
+      // Handle payment logic
+      if (selectedPayment.slug === 'credit_card') {
+        if (result.checkoutUrl) {
+          // Directly redirect to Stripe Checkout URL
+          window.location.href = result.checkoutUrl
+        } else if (result.order?._id) {
+          // Fallback to our payment page if no checkout URL
+          router.push(`/payment?order_id=${result.order._id}`)
+        } else {
+          toast.custom(
+            <Toast message="Could not initialize payment." status="error" />
+          )
+        }
+      } else if (selectedPayment.slug === 'cash_on_delivery') {
+        toast.custom(
+          <Toast message="Order placed successfully!" status="success" />
+        )
+        router.push(`/order/${result.order._id}`)
+      } else {
+        toast.custom(
+          <Toast message="Unknown payment method selected." status="error" />
+        )
+      }
+    } catch (error) {
+      console.error('Error creating order:', error)
+      toast.custom(
+        <Toast
+          message={
+            error?.message ||
+            "Failed to create order. Please check if you're logged in."
+          }
+          status="error"
+        />
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const validate = yup.object().shape({
     firstName: yup
@@ -642,6 +758,7 @@ export default function CheckoutPage({ couponGenerated }) {
                 disabled={loading}
                 type="submit"
                 className="w-full flex justify-center gap-4"
+                onClick={placeOrderHandler}
               >
                 <LockKeyhole />
                 Proceed to Payment

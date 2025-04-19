@@ -12,9 +12,9 @@ import { CategoriesModule } from './categories/categories.module';
 import { SubcategoriesModule } from './subcategories/subcategories.module';
 import { ProductsModule } from './products/products.module';
 import { CartModule } from './cart/cart.module';
-import { CouponsController } from './coupons/coupons.controller';
 import { CouponsModule } from './coupons/coupons.module';
 import { AddressModule } from './address/address.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -47,6 +47,7 @@ import { AddressModule } from './address/address.module';
     CartModule,
     CouponsModule,
     AddressModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
