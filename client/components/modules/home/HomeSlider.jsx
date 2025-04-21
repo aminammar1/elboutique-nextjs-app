@@ -12,22 +12,22 @@ import { Button } from '@/components/custom/Button'
 import Container from '@/components/custom/Container'
 import Link from 'next/link'
 import { slidesData } from '@/constants/sliderData'
+import Image from 'next/image'
 
 export default function HomeSlider() {
-
   const animation = {
     hide: { x: 60, opacity: 0 },
     show: {
       x: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: 'spring',
         stiffness: 100,
         damping: 20,
       },
     },
   }
-  
+
   return (
     <section className="relative overflow-hidden">
       <Container>
@@ -45,13 +45,18 @@ export default function HomeSlider() {
               key={idx}
               className="relative"
               style={{
-                backgroundImage: `url(${item.image})`,
-                height: "700px",
-                width: "100%",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                height: '700px',
+                width: '100%',
               }}
             >
+              <Image
+                src={item.image}
+                alt={item.title || 'Slide Image'}
+                layout="fill"
+                objectFit="cover"
+                quality={75}
+                loading="lazy"
+              />
               {item.title ? (
                 <div className="absolute inset-0 flex items-center bg-gradient-to-r from-black/60 via-black/30 to-transparent">
                   <div className="ml-8 md:ml-20 space-y-6 max-w-xl text-white">
