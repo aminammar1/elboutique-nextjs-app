@@ -30,7 +30,8 @@
 
     const staticPages = [
         { name: 'Home', link: '/' },
-        { name: 'Store', link: '/products' }
+        { name: 'Store', link: '/products' },
+        { name : 'Sign In', link: '/sign-in' },
     ]
 
     const loadSubcategories = async () => {

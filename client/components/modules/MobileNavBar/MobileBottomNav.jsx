@@ -2,7 +2,7 @@
 
     import Link from 'next/link'
     import { usePathname } from 'next/navigation'
-    import { CiHome, CiShoppingCart, CiUser, CiShop } from 'react-icons/ci'
+    import { CiHome, CiUser, CiShop } from 'react-icons/ci'
     import { useSelector } from 'react-redux'
 
     export default function MobileBottomNav() {
@@ -11,8 +11,7 @@
 
     const navItems = [
         { name: 'Home', href: '/', icon: <CiHome size={28} /> },
-        { name: 'Store', href: '/products', icon: <CiShop size={28} /> },
-        { name: 'Cart', href: '#', icon: <CiShoppingCart size={28} /> }, // You can attach cart handler
+        { name: 'Store', href: '/products', icon: <CiShop size={28} /> }, // You can attach cart handler
         {
         name: user ? 'Account' : 'Login',
         href: user ? '/account/dashboard' : '/sign-in',
