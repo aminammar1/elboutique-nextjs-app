@@ -1,7 +1,7 @@
 # 🛍️ ElBoutique E-commerce Website
 
 <div align="center">
-  <img src="/client/public/assets/images/elboutique-screen.png" alt="ElBoutique Logo" width="300"/>
+  <img src="/client/public/assets/images/elboutique-screen.png" alt="ElBoutique Logo" width="1200"/>
   <p><i>Modern e-commerce platform for fashion enthusiasts</i></p>
   
   [![Next.js](https://img.shields.io/badge/Next.js-13.5+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
