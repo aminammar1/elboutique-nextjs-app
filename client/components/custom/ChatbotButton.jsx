@@ -2,7 +2,6 @@
 
     import React, { useState, useRef, useEffect } from 'react'
     import { FaComments, FaTimes } from 'react-icons/fa'
-    import { GoogleGenerativeAI } from '@google/generative-ai'
 
     export default function ChatbotButton() {
     const [open, setOpen] = useState(false)
@@ -11,10 +10,10 @@
         { role: 'bot', content: 'Hello! How can I help you today?' },
     ])
     const [input, setInput] = useState('')
-    const [chatSession, setChatSession] = useState(null)
+    // We now use a server route, no client-side SDK
     const inputRef = useRef(null)
     const messageEndRef = useRef(null)
-    const API_KEY = process.env.NEXT_PUBLIC_Gemini_API_KEY
+    // All keys remain server-only; no need to expose anything on the client
 
     // Auto-scroll to bottom of messages
     useEffect(() => {
@@ -27,53 +26,11 @@
         if (open && inputRef.current) {
         inputRef.current.focus()
         }
-
-        // Initialize the chat session when the component mounts
-        if (open && !chatSession && API_KEY) {
-        try {
-            const genAI = new GoogleGenerativeAI(API_KEY)
-            const model = genAI.getGenerativeModel({
-            model: 'gemini-2.0-flash',
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 500, // Reduced token limit
-            },
-            })
-
-            // Start a chat session
-            const chat = model.startChat({
-            history: [
-                {
-                role: 'user',
-                parts: [
-                    {
-                    text: "Hello, I'm shopping at El Boutique website and I need some help.",
-                    },
-                ],
-                },
-                {
-                role: 'model',
-                parts: [
-                    {
-                    text: 'Hello! How can I help you today with your shopping at El Boutique?',
-                    },
-                ],
-                },
-            ],
-            })
-
-            setChatSession(chat)
-        } catch (error) {
-            console.error('Error initializing chat:', error)
-        }
-        }
-    }, [open, chatSession, API_KEY])
+    }, [open])
 
     const handleSend = async (e) => {
         e.preventDefault()
-        if (!input.trim() || !chatSession) return
+        if (!input.trim()) return
 
         const userMessage = { role: 'user', content: input }
         setMessages((prev) => [...prev, userMessage])
@@ -82,10 +39,19 @@
         setLoading(true)
 
         try {
-        // Send the message to the Gemini model
-        const result = await chatSession.sendMessage(userInput)
-        const response = await result.response
-        let botReply = response.text()
+        // Call our Next.js route that talks to OpenRouter
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages, prompt: userInput, max_tokens: 300 }),
+        })
+
+        if (!res.ok) {
+            const errText = await res.text()
+            throw new Error(errText || 'Chat request failed')
+        }
+        const data = await res.json()
+        const botReply = data?.reply || 'Sorry, I could not generate a response.'
 
         setMessages((prev) => [...prev, { role: 'bot', content: botReply }])
         } catch (error) {
@@ -95,7 +61,7 @@
             {
             role: 'bot',
             content: `Error contacting AI: ${
-                error.message || 'Please try again later.'
+                error?.message || 'Please try again later.'
             }`,
             },
         ])
@@ -187,4 +153,4 @@
         )}
         </>
     )
-}
+    }

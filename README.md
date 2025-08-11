@@ -1,11 +1,11 @@
 # 🛍️ ElBoutique E-commerce Website
 
 <div align="center">
-  <img src="/client/public/assets/images/elboutique-screen.png" alt="ElBoutique Logo" width="1200"/>
+  <img src="/client/public/assets/images/screenshot.png" alt="ElBoutique Logo" width="1200"/>
   <p><i>Modern e-commerce platform for fashion enthusiasts</i></p>
   
   [![Next.js](https://img.shields.io/badge/Next.js-15+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-  [![NestJS](https://img.shields.io/badge/NestJS-10.0+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+  [![NestJS](https://img.shields.io/badge/NestJS-11+-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
   [![MongoDB](https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
   [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0+-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
   [![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
@@ -49,6 +49,12 @@ The platform is designed with both customer experience and admin functionality i
 - **Order Management** - View order history and track current orders
 - **Address Management** - Save and manage multiple shipping addresses
 - **Responsive Design** - Optimized for desktop, tablet, and mobile devices
+
+### Chatbot Assistant (highlight)
+
+- Built-in shopping assistant available at /chatbot
+- Uses OpenRouter with model: openai/gpt-oss-20b:free via a Next.js API route
+- Server-side only key usage (OPENROUTER_API_KEY) to keep secrets secure
 
 ### Admin Features
 
@@ -140,7 +146,7 @@ backend/
 
 ### Prerequisites
 
-- Node.js (v16+)
+- Node.js (v20 LTS recommended)
 - npm or yarn
 - MongoDB
 - Stripe account (for payment processing)
@@ -193,7 +199,7 @@ npm run start:dev
 #### Client (.env.local)
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://localhost:4000
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
@@ -206,111 +212,42 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 #### Backend (.env)
 
 ```
-MONGODB_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 STRIPE_SECRET_KEY=your_stripe_secret_key
 FRONTEND_URL=http://localhost:3000
-PORT=3001
+PORT=4000
+OPENROUTER_API_KEY=your_openrouter_api_key # used by Next.js route on the client app server
 ```
 
 ## 🐳 Docker Setup
 
-ElBoutique can be easily deployed using Docker and Docker Compose.
+Docker and Docker Compose configs are included.
 
-1. Create a `docker-compose.yml` file in the root directory:
-
-```yaml
-version: '3'
-
-services:
-  frontend:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    depends_on:
-      - backend
-    environment:
-      - NEXT_PUBLIC_API_URL=http://backend:3001
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - '3001:3001'
-    depends_on:
-      - mongo
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/elboutique
-      - JWT_SECRET=your_jwt_secret
-      - STRIPE_SECRET_KEY=your_stripe_secret_key
-      - FRONTEND_URL=http://localhost:3000
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-
-volumes:
-  mongo-data:
-```
-
-2. Create a Dockerfile for the client:
-
-```Dockerfile
-# client/Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-EXPOSE 3000
-
-CMD ["npm", "start"]
-```
-
-3. Create a Dockerfile for the backend:
-
-```Dockerfile
-# backend/Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-EXPOSE 3001
-
-CMD ["npm", "run", "start:prod"]
-```
-
-4. Run with Docker Compose:
+Quick start:
 
 ```bash
-docker-compose up -d
+docker compose up -d --build
 ```
+
+Services:
+
+- client: Next.js app on http://localhost:3000
+- backend: NestJS API on http://localhost:4000
+- mongo: MongoDB 6 on port 27017
+
+Environment notes:
+
+- Backend expects MONGO_URI, JWT_SECRET, FRONTEND_URL
+- Client uses NEXT_PUBLIC_API_URL to call backend
+- Chatbot route requires OPENROUTER_API_KEY (server-side only). You can set it when running compose: `OPENROUTER_API_KEY=sk-... docker compose up`.
 
 ## 📚 API Documentation
 
 The backend API is documented using Swagger. After starting the backend server, you can access the API documentation at:
 
 ```
-http://localhost:3001/api/docs
+http://localhost:4000/api/docs
 ```
 
 This interactive documentation allows you to explore and test all available API endpoints.

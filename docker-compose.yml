@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: elboutique
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - mongo
+    environment:
+      # match backend env keys
+      MONGO_URI: mongodb://mongo:27017/elboutique
+      JWT_SECRET: changeme_please
+      FRONTEND_URL: http://localhost:3000
+      NODE_ENV: production
+    ports:
+      - '4000:4000'
+
+  client:
+    build:
+      context: ./client
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NODE_ENV: production
+      PORT: 3000
+      # Chatbot uses server-side OpenRouter API key; set via compose override or secrets
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+    ports:
+      - '3000:3000'
+
+volumes:
+  mongo-data:

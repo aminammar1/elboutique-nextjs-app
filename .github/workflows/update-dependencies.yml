@@ -1,0 +1,32 @@
+name: Update Dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1' # Mondays at 05:00 UTC
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Update backend dependencies (minor/patch)
+        working-directory: backend
+        run: |
+          npm update --save --save-dev || true
+      - name: Update client dependencies (minor/patch)
+        working-directory: client
+        run: |
+          npm update --save --save-dev || true
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/deps-update
+          commit-message: 'chore: update dependencies'
+          title: 'chore: update dependencies'
+          body: 'Automated dependency updates.'
+          labels: dependencies
