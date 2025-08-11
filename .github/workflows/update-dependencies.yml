@@ -13,15 +13,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          check-latest: false
       - name: Update backend dependencies (minor/patch)
         working-directory: backend
         run: |
           npm update --save --save-dev || true
+          npm run build --if-present || true
       - name: Update client dependencies (minor/patch)
         working-directory: client
         run: |
           npm update --save --save-dev || true
+          npm run build --if-present || true
       - name: Create PR
         uses: peter-evans/create-pull-request@v7
         with:
@@ -30,3 +32,4 @@ jobs:
           title: 'chore: update dependencies'
           body: 'Automated dependency updates.'
           labels: dependencies
+          reviewers: ${{ github.actor }}
