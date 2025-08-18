@@ -1,4 +1,4 @@
-name:  Weekly Updates
+name: Weekly Updates
 
 on:
   workflow_dispatch:
@@ -18,19 +18,23 @@ jobs:
         with:
           node-version: 20
           check-latest: false
+
       - name: Update backend dependencies (minor/patch)
         working-directory: backend
         run: |
           npm update --save --save-dev || true
+
       - name: Update client dependencies (minor/patch)
         working-directory: client
         run: |
           npm update --save --save-dev || true
+
       - name: Create PR
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.PERSONAL_TOKEN }}   
           branch: chore/weekly-updates
-          commit-message: 'chore:  weekly dependency updates'
-          title: 'chore:  weekly dependency updates'
+          commit-message: 'chore: weekly dependency updates'
+          title: 'chore: weekly dependency updates'
           body: 'Automated weekly dependency updates (minor/patch).'
           labels: dependencies
